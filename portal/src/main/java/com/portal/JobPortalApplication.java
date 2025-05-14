@@ -12,10 +12,6 @@ public class JobPortalApplication {
 
 	public static void main(String[] args) {
 		Logger logger = LoggerFactory.getLogger(JobPortalApplication.class);
-		Dotenv dotenv = Dotenv.configure().load();
-		System.setProperty("DATASOURCE_URL", dotenv.get("DATASOURCE_URL"));
-		System.setProperty("DATASOURCE_DATABASE", dotenv.get("DATASOURCE_DATABASE"));
-		System.setProperty("BREVO_API",dotenv.get("BREVO_API"));
 		SpringApplication.run(JobPortalApplication.class, args);
 		String Ip = getPublicIP();
 		logger.info(Ip);

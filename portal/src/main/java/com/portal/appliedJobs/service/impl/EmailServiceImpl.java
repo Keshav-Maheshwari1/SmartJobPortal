@@ -4,7 +4,6 @@ import com.portal.appliedJobs.service.EmailService;
 import com.portal.jobs.entities.Job;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,9 +15,8 @@ import java.util.Map;
 @Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
-
-    @Value("${BREVO_API}")
-    private String BREVO_API;
+    
+    private final String  BREVO_API="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";
 
     private final RestTemplate restTemplate;
 

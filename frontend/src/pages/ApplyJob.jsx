@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-// import { uploadFileToS3 } from '../utils/UploadFile';
 import AuthCard from '../components/AuthCard';
 import AuthForm from '../components/AuthForm';
 import { useApplyForJob } from '../customHooks/useAppliedJob';
+// import { uploadFileToS3 } from '../utils/UploadFile';
 
 const ApplyJobFormPage = () => {
   const { jobId } = useParams();
