@@ -19,17 +19,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     @Autowired
     private UserDetailsService userDetailsService;
+
     @Autowired
     private JwtHelper jwtHelper;
-
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtHelper jwtHelper) {
-        this.userDetailsService = userDetailsService;
-        this.jwtHelper = jwtHelper;
-    }
 
     Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
@@ -37,77 +35,60 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getServletPath();
 
+        // Skip JWT validation for auth-related endpoints and file upload
         if (path.equals("/api/v1/auth/signup") || path.equals("/api/v1/auth/signin") || path.equals("/proxy/putObject")) {
-            logger.info("Filter path: " + path);
-            // Skip JWT validation for these paths
+            logger.info("Skipping JWT validation for path: " + path);
             filterChain.doFilter(request, response);
             return;
         }
+
+        // Handle preflight OPTIONS requests for CORS
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-            response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            logger.info("Handling preflight OPTIONS request");
+            response.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins or set specific domains (e.g., localhost and vercel)
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setStatus(HttpServletResponse.SC_OK);
-            logger.info("Handled preflight OPTIONS");
             return;
         }
 
-
-
+        // Process Authorization Header
         String requestHeader = request.getHeader("Authorization");
-        //Bearer 2352345235sdfrsfgsdfsdf
-        logger.info(" Header :  {}", requestHeader);
         String username = null;
         String token = null;
-        if (requestHeader != null && requestHeader.startsWith("Bearer")) {
-            //looking good
+
+        if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             token = requestHeader.substring(7);
             try {
-
                 username = this.jwtHelper.getUsernameFromToken(token);
-
             } catch (IllegalArgumentException e) {
-                logger.info("Illegal Argument while fetching the username !!");
-                e.printStackTrace();
+                logger.error("Illegal Argument while fetching the username", e);
             } catch (ExpiredJwtException e) {
-                logger.info("Given jwt token is expired !!");
-                e.printStackTrace();
+                logger.error("JWT token has expired", e);
             } catch (MalformedJwtException e) {
-                logger.info("Some changed has done in token !! Invalid Token");
-                e.printStackTrace();
+                logger.error("Invalid JWT token", e);
             } catch (Exception e) {
-                e.printStackTrace();
-
+                logger.error("Unexpected error while processing JWT", e);
             }
-
-
         } else {
-            logger.info("Invalid Header Value !! ");
+            logger.warn("Invalid or missing Authorization header");
         }
 
-
-        //
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-
-            //fetch user detail from username
+            // Fetch user details from username
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             boolean validateToken = this.jwtHelper.validateToken(token);
             if (validateToken) {
-                //set the authentication
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
             } else {
-                logger.info("Validation fails !!");
+                logger.warn("JWT validation failed for username: " + username);
             }
-
-
         }
 
         filterChain.doFilter(request, response);
-
     }
 }

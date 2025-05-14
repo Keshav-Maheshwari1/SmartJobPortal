@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import { useGetAppliedJobsByApplicantEmail } from "../customHooks/useAppliedJob";
+import RoomForm from "../components/RoomForm";
 
 const UserProfilePage = () => {
   const [activeSection, setActiveSection] = useState("Profile");
@@ -40,7 +41,7 @@ const UserProfilePage = () => {
         </p>
         <p className="text-gray-400 text-center">Email: {userEmail}</p>
         <p className="text-gray-400 text-center">Role: Applicant</p>
-        </div>
+      </div>
     ),
     "Applied Jobs": () => (
       <div
@@ -79,6 +80,11 @@ const UserProfilePage = () => {
         )}
       </div>
     ),
+    "Join Room": () => {
+      <div>
+        <RoomForm />
+      </div>;
+    },
   });
 
   return (
