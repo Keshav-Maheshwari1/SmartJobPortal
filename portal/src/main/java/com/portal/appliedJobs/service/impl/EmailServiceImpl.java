@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class EmailServiceImpl implements EmailService {
     
-    private final String  BREVO_API="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";
+    private final String  BREVO_API="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";
 
     private final RestTemplate restTemplate;
 
