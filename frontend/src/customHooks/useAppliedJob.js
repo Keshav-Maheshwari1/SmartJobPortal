@@ -14,13 +14,12 @@ export const useApplyForJob = () => {
   return useMutation({
     mutationFn: applyForJob,
     onSuccess: () => {
-      // Optionally invalidate the cache to refresh applied jobs data
       queryClient.invalidateQueries(["appliedJobs"]);
     },
   });
 };
 
-// Mutation for updating application status
+
 export const useUpdateApplicationStatus = () => {
   const queryClient = useQueryClient();
 

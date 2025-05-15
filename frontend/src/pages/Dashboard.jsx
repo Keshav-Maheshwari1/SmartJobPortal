@@ -17,7 +17,7 @@ const DashboardPage = () => {
   useEffect(() => {
     setPage(0);
   }, [filters]);
-    const { data: jobs = []} = useFetchAllJobs();
+    const { data: jobs = [], isLoading} = useFetchAllJobs();
 
   const filteredJobs = jobs
     .filter(
@@ -47,13 +47,13 @@ const DashboardPage = () => {
         : new Date(a.createdAt) - new Date(b.createdAt)
     );
 
-  //   if (isLoading) {
-  //     return (
-  //       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100">
-  //         Loading...
-  //       </div>
-  //     );
-  //   }
+    if (isLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100">
+          Loading...
+        </div>
+      );
+    }
 
   return (
     <div className="min-h-fit bg-gray-900 p-4 md:p-8 md:px-32 mb-2">

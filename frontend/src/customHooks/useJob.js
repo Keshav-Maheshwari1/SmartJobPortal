@@ -8,7 +8,6 @@ import {
   deleteJob,
 } from "../services/jobApi";
 
-// Mutation to handle job creation
 export const useCreateJob = () => {
   const queryClient = useQueryClient();
 
@@ -20,14 +19,12 @@ export const useCreateJob = () => {
   });
 };
 
-// Query to fetch all jobs
 export const useFetchAllJobs = () =>
   useQuery({
     queryKey: ["jobs"],
     queryFn: fetchAllJobs,
   });
 
-// Query to fetch jobs by email (user-specific jobs)
 export const useFetchJobsByEmail = (email) =>
   useQuery({
     queryKey: ["jobs", email],
@@ -35,7 +32,6 @@ export const useFetchJobsByEmail = (email) =>
     enabled: !!email,
   });
 
-// Query to fetch a single job by ID
 export const useFetchJobById = (id) =>
   useQuery({
     queryKey: ["job", id],
@@ -43,7 +39,6 @@ export const useFetchJobById = (id) =>
     enabled: !!id,
   });
 
-// Mutation to update a job
 export const useUpdateJob = () => {
   const queryClient = useQueryClient();
 
@@ -54,8 +49,6 @@ export const useUpdateJob = () => {
         "job",
         updatedJobData.id,
       ]);
-
-      // Optimistically update the cache with the updated job data
       queryClient.setQueryData(["job", updatedJobData.id], {
         ...previousJobData,
         ...updatedJobData,
@@ -75,8 +68,6 @@ export const useUpdateJob = () => {
     },
   });
 };
-
-// Mutation to delete a job
 export const useDeleteJob = () => {
   const queryClient = useQueryClient();
 

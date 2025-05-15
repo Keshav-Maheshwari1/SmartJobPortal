@@ -1,7 +1,6 @@
 import axios from "axios";
 import BASEURL from "../constants/BaseURL";
 
-// Function to get JWT token from localStorage
 const getAuthToken = () => {
   return localStorage.getItem("accessToken");
 };

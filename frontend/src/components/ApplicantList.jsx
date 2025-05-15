@@ -12,17 +12,14 @@ const ApplicantList = () => {
     error,
   } = useGetApplicantsByHrEmail(email);
 
-  // Handle loading state
   if (isLoading) {
     return <p>Loading applicants...</p>;
   }
 
-  // Handle error state
   if (isError) {
     return <p>Error: {error.message}</p>;
   }
 
-  // Check if no applicants are present
   if (applicants?.length === 0) {
     return <p>No applicants are present.</p>;
   }
@@ -31,9 +28,9 @@ const ApplicantList = () => {
     <div className="space-y-4">
       {applicants?.map((applicant) => (
         <ApplicantDetails
-          key={applicant.id} // Assuming 'id' is unique for each applicant
+          key={applicant.id}
           applicant={applicant}
-          jobId={applicant.jobId} // Assuming you are passing jobId for each applicant
+          jobId={applicant.jobId}
         />
       ))}
     </div>

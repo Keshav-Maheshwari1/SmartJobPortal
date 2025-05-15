@@ -1,18 +1,15 @@
 import axios from "axios";
 import BASEURL from "../constants/BaseURL";
 
-// Create axios instance
 const axiosInstance = axios.create({
   baseURL: `${BASEURL}/api/v1`,
   withCredentials: false, 
 });
 
-// Function to get JWT token from localStorage
 const getAuthToken = () => {
   return localStorage.getItem("accessToken");
 };
 
-// Function to get the refresh token
 const getRefreshToken = () => {
   return localStorage.getItem("refreshToken");
 };
@@ -31,8 +28,8 @@ export const refreshJwtToken = async () => {
     setAccessToken(newAccessToken); 
     return newAccessToken;
   } catch (error) {
-    console.error("Token refresh failed:", error);
-    throw new Error("Unable to refresh token");
+
+    throw new Error("Unable to refresh token" + error);
   }
 };
 
@@ -69,15 +66,13 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// 1. Signup
 export const signUpUser = async (userData) => {
   const res = await axiosInstance.post("/auth/signup", userData);
   return res.data;
 };
 
-// 2. Signin
+
 export const signInUser = async (loginData) => {
-  console.log(loginData)
   const res = await axiosInstance.post("/auth/signin", loginData);
   if (res.data.token) {
     localStorage.setItem("accessToken", res.data.jwtToken);
@@ -86,7 +81,7 @@ export const signInUser = async (loginData) => {
   return res.data;
 };
 
-// 4. Get User
+
 export const fetchUser = async (email) => {
   const token = getAuthToken();
   const res = await axiosInstance.get(`/users/${email}`, {
@@ -97,7 +92,6 @@ export const fetchUser = async (email) => {
   return res.data;
 };
 
-// 5. Update User
 export const updateUser = async ({ email, updatedData }) => {
   const token = getAuthToken();
   const res = await axiosInstance.put(`/users/${email}`, updatedData, {
@@ -108,7 +102,6 @@ export const updateUser = async ({ email, updatedData }) => {
   return res.data;
 };
 
-// 6. Delete User
 export const deleteUser = async (email) => {
   const token = getAuthToken();
   const res = await axiosInstance.delete(`/users/${email}`, {

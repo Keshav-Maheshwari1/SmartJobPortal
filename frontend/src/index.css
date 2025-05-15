@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 
-/* Set up base styles */
+
 @layer base {
   :root {
     font-family: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -25,7 +25,6 @@ const PostJobForm = ({ email }) => {
       setErrors({ deadline: "Deadline is required." });
       return;
     }
-  localStorage.getItem("accessToken");
 
     createJob(
       { ...formData, email},

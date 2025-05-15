@@ -37,15 +37,12 @@ const Header = () => {
 
   return (
     <header className="bg-gray-900 text-white  shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Left - Logo */}
+      <div className="container mx-auto flex justify-between px-2 items-center">
         <div className="flex items-center">
           <Link to="/">
             <img src={logo} alt="Logo" className="h-23 w-23" />
           </Link>
         </div>
-
-        {/* Center - Navigation */}
         <nav className="hidden md:flex space-x-6">
           <Link
             to="/"
@@ -67,7 +64,6 @@ const Header = () => {
           </Link>
         </nav>
 
-        {/* Right - Profile/Login */}
         <div className="hidden md:block">
           {isLoggedIn ? (
             <span
@@ -84,8 +80,6 @@ const Header = () => {
             </Link>
           )}
         </div>
-
-        {/* Mobile Menu Toggle */}
         <div className="md:hidden   ">
           <button
             onClick={toggleMenu}
@@ -95,8 +89,6 @@ const Header = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu Items */}
       {menuOpen && (
         <div className="md:hidden flex flex-col items-center mt-4 space-y-4">
           <Link

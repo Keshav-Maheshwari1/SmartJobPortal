@@ -18,7 +18,7 @@ const Sidebar = ({ activeSection, setActiveSection, sections }) => {
   };
 
   return (
-    <aside className="w-full md:w-64 bg-gray-900 text-gray-100 min-h-screen px-4 py-6 shadow-md">
+    <aside className="w-full md:w-64 bg-gray-900 text-gray-100 h-fit px-4 py-6 shadow-md">
       <button
         className="md:hidden flex items-center text-gray-100 mb-6"
         onClick={() => setIsOpen(!isOpen)}

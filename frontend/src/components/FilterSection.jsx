@@ -32,7 +32,6 @@ const FilterSection = ({ filters, setFilters }) => {
 
   return (
     <div className="w-full md:w-1/4 md:pr-4">
-      {/* Toggle Button for Mobile */}
       <button
         className="md:hidden flex items-center text-white bg-blue-600 px-3 py-2 rounded-lg mb-4 shadow hover:bg-blue-700 transition"
         onClick={() => setIsOpen(!isOpen)}
@@ -52,8 +51,6 @@ const FilterSection = ({ filters, setFilters }) => {
         </svg>
         <span className="font-semibold text-sm">Filters</span>
       </button>
-
-      {/* Filter Section */}
       <div
         className={`md:block ${
           isOpen ? "block" : "hidden"
@@ -68,7 +65,6 @@ const FilterSection = ({ filters, setFilters }) => {
           handleChange={handleChange}
         />
 
-        {/* Sort Dropdown */}
         <div className="mt-4">
           <label className="block text-sm text-gray-300 font-medium mb-1">
             Sort By

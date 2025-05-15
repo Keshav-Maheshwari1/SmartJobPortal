@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const JobCard = ({ job }) => {
-  const category = job.eligibility?.split(' ')[0] || 'General'; // Derive from eligibility
+  const category = job.eligibility?.split(' ')[0] || 'General'; 
   const shortDesc = job.description.length > 100 ? `${job.description.slice(0, 100)}...` : job.description;
 
   return (

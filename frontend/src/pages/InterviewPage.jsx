@@ -7,7 +7,6 @@ import RoomForm from "../components/RoomForm";
 const InterviewPage = () => {
   const [tokenData, setTokenData] = useState("");
 
-  // Handles room creation or joining
   const handleConnect = async ({ roomId, userName }) => {
     const res = await getToken(roomId, userName);
     setTokenData({ ...res.data });

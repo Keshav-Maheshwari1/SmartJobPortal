@@ -88,7 +88,7 @@ const UserProfilePage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-900 flex">
+    <div className="h-fit  bg-gray-900 flex flex-col md:flex-row">
       <Sidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}

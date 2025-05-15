@@ -5,7 +5,6 @@ const Hero = () => {
   return (
     <section className="w-full bg-gray-900 text-gray-100 py-20">
       <div className="max-w-7xl mx-auto px-4 flex flex-col-reverse md:flex-row items-center gap-10">
-        {/* Text Section */}
         <div className="md:w-1/2 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
             Find Your <span className="text-blue-600">Dream Job</span>
@@ -20,8 +19,6 @@ const Hero = () => {
             </button>
           </Link>
         </div>
-
-        {/* Image Section */}
         <div className="md:w-1/2">
           <img
             src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
