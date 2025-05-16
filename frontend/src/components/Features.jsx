@@ -11,60 +11,49 @@ const Features = () => {
     {
       title: "Easy Job Search",
       detail: "AI-powered filtering tailored to your skills and interests.",
-      icon: <RiSearchLine className="w-8 h-8 text-white" />,
+      icon: <RiSearchLine className="w-8 h-8 text-orange-400" />,
     },
     {
       title: "Secure Applications",
       detail: "Your data is encrypted and handled with utmost care.",
-      icon: <RiShieldCheckLine className="w-8 h-8 text-white" />,
+      icon: <RiShieldCheckLine className="w-8 h-8 text-orange-400" />,
     },
     {
       title: "HR Tools",
       detail: "Streamlined hiring from applicant filtering to interviews.",
-      icon: <RiToolsLine className="w-8 h-8 text-white" />,
+      icon: <RiToolsLine className="w-8 h-8 text-orange-400" />,
     },
   ];
 
   return (
-    <section className="bg-gray-900 w-full py-20">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
-        <div className="flex flex-col gap-8 md:w-1/2">
-          <h2 className="text-4xl font-bold text-white mb-4">Features</h2>
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow"
-            >
-              <h3 className="text-2xl font-semibold text-gray-100 mb-2">
+    <section className="bg-gray-900 w-full py-16 px-6 md:px-16 lg:px-32">
+      <div className="flex flex-col items-center mb-12 text-center max-w-4xl mx-auto space-y-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          Why Choose <span className="text-[#155DFC]">SmartHire</span>?
+        </h1>
+        <p className="text-base sm:text-xl text-gray-300 px-4">
+          JobFlow leverages cutting-edge AI and robust security to provide a
+          seamless experience for both job seekers and HR professionals.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {features.map((feature, index) => (
+          <div
+            key={index}
+            className="p-6 bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 hover:scale-[1.02] transform"
+          >
+            <div className="flex flex-col items-center text-center space-y-4">
+              <span className="rounded-full 	bg-[#2c2c2c] p-4 text-white text-2xl">
+                {feature.icon}
+              </span>
+              <h3 className="text-xl font-semibold text-white">
                 {feature.title}
               </h3>
-              <p className="text-gray-400">{feature.detail}</p>
-            </div>
-          ))}
-        </div>
-        <div className="relative mt-12 md:mt-0 md:w-1/2 flex justify-center">
-          <div className="w-[120px] h-[120px] rounded-full border-[3px] border-blue-600 bg-gradient-to-r from-gray-800 to-gray-900 flex items-center justify-center relative">
-            <div className="absolute w-12 h-12 bg-transparent rounded-full flex items-center justify-center">
-              <RiRadarLine className="w-6 h-6 text-blue-600" />
-            </div>
-
-            <div className="absolute -top-10 right-[50%] translate-x-1/2 flex flex-col items-center">
-              <div className="w-16 h-16 bg-gray-800 text-white flex items-center justify-center rounded-full shadow-lg border border-blue-600">
-                {features[0].icon}
-              </div>
-            </div>
-            <div className="absolute bottom-2 right-[-20px] flex flex-col items-center">
-              <div className="w-16 h-16 bg-gray-800 text-white flex items-center justify-center rounded-full shadow-lg border border-blue-600">
-                {features[1].icon}
-              </div>
-            </div>
-            <div className="absolute bottom-2 left-[-20px] flex flex-col items-center">
-              <div className="w-16 h-16 bg-gray-800 text-white flex items-center justify-center rounded-full shadow-lg border border-blue-600">
-                {features[2].icon}
-              </div>
+              <p className="text-base text-gray-300">{feature.detail}</p>
             </div>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );
