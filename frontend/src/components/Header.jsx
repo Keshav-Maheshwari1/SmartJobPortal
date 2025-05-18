@@ -4,6 +4,8 @@ import { useFetchUser } from "../customHooks/useAuth";
 import { logo } from "../assets";
 import { FaBars, FaTimes } from "react-icons/fa";
 import AnimatedSection from "./AnimatedSection";
+import Slider from "react-slick";
+import sliderImages from "../constants/sliderImages";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -45,14 +47,28 @@ const Header = () => {
     };
   }, [menuOpen]);
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    cssEase: "ease-in-out",
+    arrows: false,
+    pauseOnHover: false,
+    lazyLoad: "progressive",
+  };
+
   if (isLoading) return <div className="p-4 text-center">Loading...</div>;
 
   return (
-    <header className="bg-gray-900 text-white shadow-md fixed top-0 w-full z-50">
-      <div className="container mx-auto flex justify-between items-center px-4 py-3 md:py-4">
+    <header className="bg-gray-900 text-white shadow-md  w-full z-50">
+      <div className="container mx-auto flex justify-between md:justify-evenly items-center px-4 ">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <img src={logo} alt="Logo" className="h-12 w-auto" />
+          <img src={logo} alt="Logo" className="h-16 w-auto" />
         </Link>
 
         {/* Nav links (desktop) */}
@@ -102,11 +118,12 @@ const Header = () => {
 
       {/* Mobile menu */}
       <AnimatedSection
-        className={`md:hidden bg-gray-800 overflow-hidden ${
+        className={`md:hidden flex flex-col justify-around bg-gray-800 transition-all duration-500 ease-in-out overflow-hidden ${
           menuOpen ? "min-h-screen py-6" : "max-h-0 py-0"
         }`}
       >
-        <div className="flex flex-col items-center space-y-4 px-4">
+        {/* Navigation Links */}
+        <div className="flex flex-col items-center justify-start space-y-5 px-6">
           {["/", "/jobs", "/contact"].map((path, i) => {
             const label = ["Home", "Jobs", "Contact"][i];
             return (
@@ -114,7 +131,7 @@ const Header = () => {
                 key={label}
                 to={path}
                 onClick={toggleMenu}
-                className="text-lg font-semibold text-[#2865FC] hover:text-blue-400 transition"
+                className="text-lg font-semibold text-blue-400 hover:text-white transition"
               >
                 {label}
               </Link>
@@ -124,7 +141,7 @@ const Header = () => {
           {isLoggedIn ? (
             <span
               onClick={handleProfileClick}
-              className="cursor-pointer text-white hover:text-blue-400 transition"
+              className="cursor-pointer text-white font-medium hover:text-blue-400 transition"
             >
               {name}
             </span>
@@ -132,12 +149,28 @@ const Header = () => {
             <Link to="/login">
               <button
                 onClick={toggleMenu}
-                className="py-2 px-6 bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+                className="py-2 px-6 bg-blue-600 rounded-lg hover:bg-blue-700 transition text-white font-medium"
               >
                 Login
               </button>
             </Link>
           )}
+        </div>
+
+        {/* Slider Section with Responsive Spacing */}
+        <div className="w-full max-w-4xl mx-auto px-4 pt-6 sm:pt-8">
+          <Slider {...sliderSettings}>
+            {sliderImages.map((image, index) => (
+              <div key={index} className="px-2">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-68 object-cover rounded-lg"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </Slider>
         </div>
       </AnimatedSection>
     </header>

@@ -26,7 +26,7 @@ const JobList = ({ jobs, page, setPage }) => {
       {paginatedJobs.length > 0 ? (
         paginatedJobs.map((job) => <JobCard key={job.id} job={job} />)
       ) : (
-        <p className="text-gray-400 text-center">No jobs match the filters.</p>
+        <p className="text-gray-400 text-center">No jobs Found</p>
       )}
       <div className="flex w-full justify-center gap-4 mt-4">
         <div className="w-20">

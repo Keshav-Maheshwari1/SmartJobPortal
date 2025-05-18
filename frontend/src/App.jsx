@@ -14,6 +14,7 @@ import LandingPage from "./pages/Landing";
 import InterviewPage from "./pages/InterviewPage";
 import { ScrollToTop } from "./utils/ScrollToTop";
 import JobEditPage from "./pages/JobEditPage";
+import ProtectedRoute from "./components/ProtectedRouteProps";
 
 const App = () => {
   return (
@@ -23,49 +24,118 @@ const App = () => {
         <main className="flex-1">
           <ScrollToTop />
           <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/jobs/:jobId/apply" element={<ApplyJobFormPage />} />
-            <Route path="/post-job" element={<PostJobPage />} />
-            <Route path="/jobs/:jobId" element={<JobDetailsPage />} />
-            <Route path="/profile/hr" element={<HRProfilePage />} />
-            <Route path="/profile/applicant" element={<UserProfilePage />} />
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/jobs" element={<DashboardPage />} />
-            <Route path="/jobs/edit/:jobId" element={<JobEditPage />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/jobs/:jobId/apply"
+              element={
+                <ProtectedRoute>
+                  <ApplyJobFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/post-job"
+              element={
+                <ProtectedRoute>
+                  <PostJobPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs/:jobId"
+              element={
+                <ProtectedRoute>
+                  <JobDetailsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/hr"
+              element={
+                <ProtectedRoute>
+                  <HRProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/applicant"
+              element={
+                <ProtectedRoute>
+                  <UserProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs/edit/:jobId"
+              element={
+                <ProtectedRoute>
+                  <JobEditPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/interviews/:roomId"
+              element={
+                <ProtectedRoute>
+                  <InterviewPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Optional static routes - protect if needed */}
             <Route
               path="/contact"
               element={
-                <div className="container mx-auto p-4 text-gray-100">
-                  Contact Page (Placeholder)
-                </div>
+                <ProtectedRoute>
+                  <div className="container mx-auto p-4 text-gray-100">
+                    Contact Page (Placeholder)
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/privacy"
               element={
-                <div className="container mx-auto p-4 text-gray-100">
-                  Privacy Policy (Placeholder)
-                </div>
+                <ProtectedRoute>
+                  <div className="container mx-auto p-4 text-gray-100">
+                    Privacy Policy (Placeholder)
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/terms"
               element={
-                <div className="container mx-auto p-4 text-gray-100">
-                  Terms of Service (Placeholder)
-                </div>
+                <ProtectedRoute>
+                  <div className="container mx-auto p-4 text-gray-100">
+                    Terms of Service (Placeholder)
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/blog"
               element={
-                <div className="container mx-auto p-4 text-gray-100">
-                  Blog (Placeholder)
-                </div>
+                <ProtectedRoute>
+                  <div className="container mx-auto p-4 text-gray-100">
+                    Blog (Placeholder)
+                  </div>
+                </ProtectedRoute>
               }
             />
-            <Route path="/interviews/:roomId" element={<InterviewPage />} />
           </Routes>
         </main>
         <Footer />

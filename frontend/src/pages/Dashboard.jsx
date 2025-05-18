@@ -13,11 +13,16 @@ const DashboardPage = () => {
     deadlineAfter: "",
     sort: 'latest'
   });
+
+  
+
   const [page, setPage] = useState(0);
   useEffect(() => {
     setPage(0);
   }, [filters]);
     const { data: jobs = [], isLoading} = useFetchAllJobs();
+
+  
 
   const filteredJobs = jobs
     .filter(
