@@ -1,3 +1,2 @@
-const BASEURL="http://localhost:9000"
+const BASEURL="https://job-portal-1-ynmu.onrender.com"
 export default BASEURL;
-// https://smart-hire-xj6h.onrender.com

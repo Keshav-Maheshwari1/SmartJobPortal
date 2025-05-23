@@ -2,7 +2,7 @@ import axios from "axios";
 export const uploadFileToS3 = async (file) => {
   try {
     const fileName = file.name + Date.now();
-    const response = await fetch("https://smart-hire-xj6h.onrender.com/proxy/putObject", {
+    const response = await fetch("https://job-portal-1-ynmu.onrender.com/proxy/putObject", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
