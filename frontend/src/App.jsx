@@ -15,6 +15,7 @@ import InterviewPage from "./pages/InterviewPage";
 import { ScrollToTop } from "./utils/ScrollToTop";
 import JobEditPage from "./pages/JobEditPage";
 import ProtectedRoute from "./components/ProtectedRouteProps";
+import ContactPage from "./components/Contact";
 
 const App = () => {
   return (
@@ -100,9 +101,7 @@ const App = () => {
               path="/contact"
               element={
                 <ProtectedRoute>
-                  <div className="container mx-auto p-4 text-gray-100">
-                    Contact Page (Placeholder)
-                  </div>
+                  <ContactPage/>
                 </ProtectedRoute>
               }
             />

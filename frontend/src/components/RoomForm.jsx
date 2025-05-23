@@ -18,7 +18,7 @@ const RoomForm = ({ handleConnect }) => {
       <div>
         <label
           htmlFor="roomId"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-white"
         >
           Room ID
         </label>
@@ -34,7 +34,7 @@ const RoomForm = ({ handleConnect }) => {
       <div>
         <label
           htmlFor="userName"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-white"
         >
           Name
         </label>

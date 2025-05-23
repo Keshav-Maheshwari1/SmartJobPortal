@@ -46,12 +46,16 @@ const JobDetailsPage = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-400">
+          <p>
+              <span className="font-semibold text-blue-400 ">Salary:</span>{" "}
+              {job.salary ? job.salary.toLocaleString() : "Will Be Disclosed Later"}
+            </p>
             <p>
-              <span className="font-semibold text-white">Deadline:</span>{" "}
+              <span className="font-semibold text-blue-400 ">Deadline:</span>{" "}
               {new Date(job.deadline).toLocaleString()}
             </p>
             <p>
-              <span className="font-semibold text-white">Posted:</span>{" "}
+              <span className="font-semibold text-blue-400 ">Posted:</span>{" "}
               {new Date(job.createdAt).toLocaleDateString()}
             </p>
           </div>

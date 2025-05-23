@@ -11,7 +11,6 @@ const Header = () => {
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-
   useEffect(() => {
     const email = localStorage.getItem("userEmail");
     setUserEmail(email || "");

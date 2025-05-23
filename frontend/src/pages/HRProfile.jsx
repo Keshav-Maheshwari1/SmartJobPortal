@@ -45,28 +45,30 @@ const HRProfilePage = () => {
         return <ApplicantList />;
       case "Create Room":
         return (
-          <AuthForm
-            fields={[
-              {
-                name: "roomId",
-                label: "Room ID",
-                type: "text",
-                value: roomId,
-                isPassword: false,
-              },
-            ]}
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (roomId.trim()) {
-                localStorage.setItem("roomId", roomId.trim());
-                alert("Room ID saved!");
-              }
-            }}
-            buttonLabel="Save Room ID"
-            isLoading={false}
-            errors={{}}
-            handleChange={(e) => setRoomId(e.target.value)}
-          />
+          <main className="bg-gray-800 p-6 rounded-xl shadow-lg max-w-xl mx-auto">
+            <AuthForm
+              fields={[
+                {
+                  name: "roomId",
+                  label: "Room ID",
+                  type: "text",
+                  value: roomId,
+                  isPassword: false,
+                },
+              ]}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (roomId.trim()) {
+                  localStorage.setItem("roomId", roomId.trim());
+                  alert("Room ID saved!");
+                }
+              }}
+              buttonLabel="Save Room ID"
+              isLoading={false}
+              errors={{}}
+              handleChange={(e) => setRoomId(e.target.value)}
+            />
+          </main>
         );
       default:
         return null;
@@ -74,14 +76,14 @@ const HRProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 flex flex-col md:flex-row">
       <Sidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}
         sections={sections}
       />
       <main className="flex-1 p-6 md:p-10 overflow-auto">
-        <h1 className="text-3xl font-semibold text-gray-100 mb-6">
+        <h1 className="text-3xl text-center font-semibold text-gray-100 mb-6">
           HR Dashboard
         </h1>
         <div className="animate-fade-in">{renderSection()}</div>

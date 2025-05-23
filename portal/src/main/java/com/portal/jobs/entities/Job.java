@@ -22,6 +22,7 @@ public class Job {
     private String description;
     private String eligibility;
     private String category;
+    private String salary;
     private LocalDateTime deadline;
     private LocalDateTime createdAt;
     private String email;

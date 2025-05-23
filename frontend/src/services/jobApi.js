@@ -1,11 +1,9 @@
 import axios from "axios";
 import BASEURL from "../constants/BaseURL";
 
-
 const getAuthToken = () => {
   return localStorage.getItem("accessToken");
 };
-
 
 export const createJob = async (job) => {
   const token = getAuthToken();

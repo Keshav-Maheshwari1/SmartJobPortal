@@ -4,6 +4,8 @@ import AuthCard from "../components/AuthCard";
 import AuthForm from "../components/AuthForm";
 import { useSignIn } from "../customHooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { login } from "../assets";
+import AnimatedSection from "../components/AnimatedSection";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -44,25 +46,33 @@ const LoginPage = () => {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <AuthCard
-        title="Login"
-        footerText="Don't have an account?"
-        footerLink="/signup"
-        footerLinkText="Sign Up"
-      >
-        <AuthForm
-          fields={fields}
-          onSubmit={handleSubmit}
-          buttonLabel="Sign In"
-          isLoading={isLoading}
-          errors={errors}
-          handleChange={handleChange}
+    <div className="h-fit flex items-center justify-center bg-gray-900 px-4">
+      <AnimatedSection className="flex md:flex-row items-center gap-8 bg-gray-800 md:p-8 rounded-xl shadow-lg w-full max-w-5xl">
+        {/* Image */}
+        <img
+          src={login}
+          alt="Profile"
+          className=" hidden md:block w-full md:w-1/2 h-auto rounded-lg object-cover"
         />
-        {errors.general && (
-          <p className="text-red-500 text-center mt-2">{errors.general}</p>
-        )}
-      </AuthCard>
+        <AuthCard
+          title="Login"
+          footerText="Don't have an account?"
+          footerLink="/signup"
+          footerLinkText="Sign Up"
+        >
+          <AuthForm
+            fields={fields}
+            onSubmit={handleSubmit}
+            buttonLabel="Sign In"
+            isLoading={isLoading}
+            errors={errors}
+            handleChange={handleChange}
+          />
+          {errors.general && (
+            <p className="text-red-500 text-center mt-2">{errors.general}</p>
+          )}
+        </AuthCard>
+      </AnimatedSection>
     </div>
   );
 };

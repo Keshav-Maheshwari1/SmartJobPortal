@@ -27,7 +27,7 @@ const PostJobForm = ({ email }) => {
     }
 
     createJob(
-      { ...formData, email},
+      { ...formData, email },
       {
         onSuccess: () => {
           setFormData({
@@ -35,6 +35,7 @@ const PostJobForm = ({ email }) => {
             description: "",
             eligibility: "",
             deadline: "",
+            salary: "",
           });
           setErrors({ success: "Job posted!" });
         },
@@ -64,6 +65,12 @@ const PostJobForm = ({ email }) => {
       type: "datetime-local",
       name: "deadline",
       value: formData.deadline,
+    },
+    {
+      label: "Salary (LPA)",
+      type: "text",
+      name: "salary",
+      value: formData.salary,
     },
   ];
 

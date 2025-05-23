@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import FilterSection from "../components/FilterSection";
 import JobList from "../components/JobList";
 import { useFetchAllJobs } from "../customHooks/useJob";
+import AnimatedSection from "../components/AnimatedSection";
 
 const DashboardPage = () => {
   const [filters, setFilters] = useState({
@@ -61,11 +62,11 @@ const DashboardPage = () => {
     }
 
   return (
-    <div className="min-h-fit bg-gray-900 p-4 md:p-8 md:px-32 mb-2">
-      <div className="flex flex-col md:flex-row">
+    <div className="min-h-fit bg-gradient-to-r from-black via-black/60 to-black/10 p-4 md:p-8 md:px-32 mb-2">
+      <AnimatedSection className="flex flex-col md:flex-row">
         <FilterSection filters={filters} setFilters={setFilters} />
         <JobList jobs={filteredJobs} page={page} setPage={setPage} />
-      </div>
+      </AnimatedSection>
     </div>
   );
 };

@@ -5,7 +5,6 @@ import { useDeleteUser } from "../customHooks/useAuth";
 const Sidebar = ({ activeSection, setActiveSection, sections }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-
   const { mutate: deleteUser } = useDeleteUser();
 
   const handleLogout = () => {
@@ -18,13 +17,16 @@ const Sidebar = ({ activeSection, setActiveSection, sections }) => {
   };
 
   return (
-    <aside className="w-full md:w-64 bg-gray-900 text-gray-100 h-fit px-4 py-6 shadow-md">
+    <aside
+      className="w-full  md:w-64 bg-transparent md:bg-gray-800/70 md:backdrop-blur-md
+     text-white h-full px-6 py-8 shadow-lg rounded-3xl relative md:top-24 md:left-24"
+    >
       <button
-        className="md:hidden flex items-center text-gray-100 mb-6"
+        className="md:hidden flex items-center mb-6 text-white"
         onClick={() => setIsOpen(!isOpen)}
       >
         <svg
-          className="w-6 h-6 mr-2"
+          className="w-7 h-7 mr-2"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -36,38 +38,40 @@ const Sidebar = ({ activeSection, setActiveSection, sections }) => {
             d="M4 6h16M4 12h16M4 18h16"
           />
         </svg>
-        <span className="font-semibold">Menu</span>
+        <span className="font-bold text-lg">Menu</span>
       </button>
 
-      <div className={`${isOpen ? "block" : "hidden"} md:block`}>
-        <ul className="space-y-4">
+      <div className={`${isOpen ? "block" : "hidden"} md:block transition-all`}>
+        <ul className="space-y-5">
           {sections.map((section) => (
             <li key={section.name}>
               <button
                 onClick={() => setActiveSection(section.name)}
-                className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors duration-200 ${
-                  activeSection === section.name
-                    ? "bg-blue-600 shadow-sm"
-                    : "hover:bg-gray-700"
-                }`}
+                className={`flex items-center w-full px-4 py-3 rounded-xl text-left transition-all
+                   duration-300 ease-in-out font-medium text-sm tracking-wide ${
+                     activeSection === section.name
+                       ? "bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg scale-[1.02]"
+                       : "hover:bg-gray-700"
+                   }`}
               >
                 <svg
-                  className="w-5 h-5 mr-3"
+                  className="w-5 h-5 mr-3 text-white"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path d={section.icon} />
                 </svg>
-                <span className="text-sm font-medium">{section.name}</span>
+                <span>{section.name}</span>
               </button>
             </li>
           ))}
         </ul>
 
-        <div className="mt-6">
+        <div className="mt-10">
           <button
             onClick={handleLogout}
-            className="w-full px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 text-sm font-medium"
+            className="w-full px-4 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold 
+            text-sm shadow-md transition-all duration-300"
           >
             Logout
           </button>
