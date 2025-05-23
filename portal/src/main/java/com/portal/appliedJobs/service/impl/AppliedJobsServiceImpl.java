@@ -37,6 +37,7 @@ public class AppliedJobsServiceImpl {
     }
 
     public ResponseEntity<String> applyForJob(String applicantEmail, String resumeUrl, String jobId) {
+        String resUrl = "https://drive.google.com/file/d/1R4SohqSF1rAvCPUiJtKWoParltISRkTx/view";
         try {
             Job job = jobService.getJobById(jobId).getBody();
             if (job == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Job not found");
@@ -54,7 +55,7 @@ public class AppliedJobsServiceImpl {
                 return ResponseEntity.badRequest().body("Job has already expired.");
             }
 
-            // Step 2: Check existing application
+//             Step 2: Check existing application
             Optional<AppliedJobs> existingApplication = appliedJobsRepository.findByApplicantEmailAndJobId(applicantEmail, jobId);
             if (existingApplication.isPresent()) {
                 AppliedJobs appliedJobs = existingApplication.get();
@@ -73,24 +74,27 @@ public class AppliedJobsServiceImpl {
             }
 
             // Step 3: Process resume and score
-            String resumeText = resumeService.extractResumeText(resumeUrl);
+            String fileId = "1R4SohqSF1rAvCPUiJtKWoParltISRkTx";
+            String cleanedUrl = "https://drive.google.com/uc?export=download&id=" + fileId;
+            String resumeText = resumeService.extractResumeText(cleanedUrl);
             double score = resumeService.calculateMatchScore(resumeText, job.getDescription());
 
-            // Step 4: Prepare and save new application
+            // Step 4: Prepare and save a new application
             AppliedJobs applied = new AppliedJobs();
             applied.setApplicantEmail(applicantEmail);
-            applied.setResumeUrl(resumeUrl);
+
+            applied.setResumeUrl(resUrl);
             applied.setJobId(jobId);
             applied.setAppliedOn(LocalDateTime.now());
             String applicantName = Objects.requireNonNull(userService.getUser(applicantEmail).getBody()).getName();
             if(applicantName == null){
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body("No User Exist");
             }
-            if (score >= 0.40) {
-                emailService.sendHrEmail(applicantEmail, job, resumeUrl,applicantName);
+            if (score >= 0.56) {
+                emailService.sendHrEmail(applicantEmail, job, resUrl,applicantName);
                 applied.setStatus(Status.REVIEWING);
             } else {
-                emailService.sendRejectionEmail(applicantEmail, job, resumeUrl,applicantName);
+                emailService.sendRejectionEmail(applicantEmail, job, resUrl,applicantName);
                 applied.setStatus(Status.REJECTED);
                 applied.setBanExpiryDate(LocalDateTime.now().plusMonths(6));
                 appliedJobsRepository.save(applied);
@@ -102,7 +106,7 @@ public class AppliedJobsServiceImpl {
         } catch (Exception e) {
             AppliedJobs failed = new AppliedJobs();
             failed.setApplicantEmail(applicantEmail);
-            failed.setResumeUrl(resumeUrl);
+            failed.setResumeUrl(resUrl);
             failed.setJobId(jobId);
             failed.setAppliedOn(LocalDateTime.now());
             failed.setStatus(Status.PENDING);

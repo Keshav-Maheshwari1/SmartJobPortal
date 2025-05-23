@@ -25,18 +25,11 @@ public class ResumeServiceImpl implements ResumeService {
         try {
 
             String encodedFileName = resumeUrl.substring(resumeUrl.lastIndexOf("/") + 1).replace(" ", "%20");
-            String cleanedUrl = "https://reels-anshu.s3.eu-north-1.amazonaws.com/uploads/" + encodedFileName;
 
-
-            System.out.println("Extracting resume text from URL: " + cleanedUrl);
-
-
-            URL url = URI.create(cleanedUrl).toURL();
+            URL url = URI.create(resumeUrl).toURL();
             inputStream = url.openStream();
 
-
             PDDocument document = PDDocument.load(inputStream);
-
             PDFTextStripper pdfTextStripper = new PDFTextStripper();
             String text = pdfTextStripper.getText(document);
             document.close();

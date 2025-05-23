@@ -90,7 +90,7 @@ public class EmailServiceImpl implements EmailService {
         Map<String, Object> body = new HashMap<>();
         body.put("sender", Map.of("name", "SmartHire", "email", "maheshwari.keshav2090@gmail.com"));
         body.put("to", List.of(Map.of("email", toEmail)));
-        body.put("templateId", 4); // Assuming you have a template with ID 3 for the offer letter
+        body.put("templateId", 4);
 
         // Prepare the parameters for the offer letter template
         Map<String, Object> params = new HashMap<>();
@@ -102,18 +102,15 @@ public class EmailServiceImpl implements EmailService {
         params.put("responseDate", responseDate);
         params.put("hrName", hrName);
 
-        // Attach the parameters to the email body
         body.put("params", params);
 
-        // Create HTTP request
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         try {
-            // Make the request to Brevo API
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
 
         } catch (Exception e) {
             System.out.println("BREVO ERROR: " + e.getMessage());
-            e.printStackTrace(); // Print full stack trace
+            e.printStackTrace();
         }
     }
 
@@ -146,7 +143,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
         } catch (Exception e) {
-            e.printStackTrace(); // Print full stack trace
+            e.printStackTrace();
         }
 
     }
