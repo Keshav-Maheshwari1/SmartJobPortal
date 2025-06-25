@@ -29,7 +29,13 @@ public class User implements UserDetails {
     @Indexed(unique = true)
     private String email;
     private String password;
-
+    private String companyName;
+    @Indexed(unique = true, sparse = true)
+    private String gitHubUrl;
+    @Indexed(unique = true, sparse = true)
+    private String linkedInUrl;
+    @Indexed(unique = true, sparse = true)
+    private String panCard;
     private Role role; // HR or APPLICANT
 
     private LocalDateTime createdAt; // optional ISO string or store as LocalDateTime

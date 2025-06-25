@@ -1,7 +1,7 @@
 package com.portal.appliedJobs.repository;
 
 import com.portal.appliedJobs.Status;
-import com.portal.appliedJobs.models.AppliedJobs;
+import com.portal.appliedJobs.entity.AppliedJobs;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +16,5 @@ public interface AppliedJobRepository extends MongoRepository<AppliedJobs,String
     List<AppliedJobs> findByJobIdAndStatus(String jobId, Status status);
 
 
+    void deleteByJobId(String jobId);
 }

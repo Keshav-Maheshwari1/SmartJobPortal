@@ -1,16 +1,21 @@
 package com.portal.user.service.impl;
 
-import com.mongodb.DuplicateKeyException;
+
 import com.portal.Role;
+import com.portal.appliedJobs.service.AppliedJobsService;
+import com.portal.appliedJobs.service.impl.AppliedJobsServiceImpl;
+
+import com.portal.jobs.service.JobService;
 import com.portal.user.Entities.RefreshToken;
 import com.portal.user.Entities.User;
 import com.portal.user.models.JwtRequest;
 import com.portal.user.models.JwtResponse;
+import com.portal.user.repository.RefreshTokenRepository;
 import com.portal.user.repository.UserRepository;
 import com.portal.user.security.JwtHelper;
 import com.portal.user.service.RefreshTokenService;
 import com.portal.user.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -36,18 +42,23 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final JobService jobService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public UserServiceImpl(
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
             JwtHelper jwtHelper,
             UserRepository userRepository,
-            RefreshTokenService refreshTokenService) {
+            RefreshTokenService refreshTokenService, JobService jobService, RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenService = refreshTokenService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtHelper = jwtHelper;
         this.userRepository = userRepository;
+        this.jobService = jobService;
+
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     private boolean isRefreshTokenValid(RefreshToken refreshToken) {
@@ -82,92 +93,144 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<JwtResponse> createUser(User user) {
-        User existing = userRepository.findByEmail(user.getEmail());
-        if (existing != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new IllegalStateException("User already exists with this email");
         }
 
-        try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRole(isHr(user.getEmail()) ? Role.HR : Role.APPLICANT);
-            user.setCreatedAt(LocalDateTime.now());
 
-            RefreshToken refreshToken = refreshTokenService.createToken(user.getEmail()).getBody();
-            user.setRefreshToken(refreshToken);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(isHr(user.getEmail()) ? Role.HR : Role.APPLICANT);
+        user.setCreatedAt(LocalDateTime.now());
 
-            userRepository.save(user);
+        RefreshToken refreshToken = refreshTokenService.createToken(user.getEmail()).getBody();
+        user.setRefreshToken(refreshToken);
 
-            JwtResponse jwtResponse = generateTokens(user);
-            return ResponseEntity.ok(jwtResponse);
-        } catch (DuplicateKeyException e) {
-            throw new IllegalStateException("User with this email already exists");
-        } catch (Exception e) {
-            throw new RuntimeException("Could not create user, please try again");
-        }
+        userRepository.save(user);
+
+        JwtResponse jwtResponse = generateTokens(user);
+        return ResponseEntity.ok(jwtResponse);
     }
+
+
+
 
     @Override
     public ResponseEntity<JwtResponse> loginUser(JwtRequest request) {
         User user = authenticate(request);
 
-        if (user != null && passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            RefreshToken refreshToken = refreshTokenService.createToken(user.getEmail()).getBody();
-            user.setRefreshToken(refreshToken);
-            userRepository.save(user);
+        RefreshToken refreshToken = refreshTokenService.createToken(user.getEmail()).getBody();
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
 
-            JwtResponse jwtResponse = generateTokens(user);
-            if (jwtResponse == null) return ResponseEntity.badRequest().body(null);
-            return ResponseEntity.ok(jwtResponse);
+        JwtResponse jwtResponse = generateTokens(user);
+        if (jwtResponse == null) {
+            throw new IllegalStateException("Refresh token is invalid or expired");
         }
 
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok(jwtResponse);
     }
 
     private User authenticate(JwtRequest input) {
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(input.getEmail(), input.getPassword());
+
         try {
             authenticationManager.authenticate(authentication);
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Invalid Username or Password!!");
+            throw new BadCredentialsException("Invalid email or password");
         }
 
-        return userRepository.findByEmail(input.getEmail());
+        return Optional.ofNullable(userRepository.findByEmail(input.getEmail()))
+                .orElseThrow(() -> new IllegalStateException("User not found with email: " + input.getEmail()));
     }
-
     @Override
     public ResponseEntity<User> getUser(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email))
-                .map(user -> {
-                    if (!isRefreshTokenValid(user.getRefreshToken())) {
-                        ResponseEntity.status(401).build();
-                    }
-                    return ResponseEntity.ok(user);
-                })
-                .orElse(ResponseEntity.notFound().build());
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new IllegalStateException("User not found");
+        }
+        if (!isRefreshTokenValid(user.getRefreshToken())) {
+            throw new IllegalStateException("Refresh token expired. Please login again.");
+        }
+
+        return ResponseEntity.ok(user);
     }
 
     @Override
-    public ResponseEntity<String> updateUser(String email, User user) {
-        return Optional.ofNullable(userRepository.findByEmail(email))
-                .map(oldUser -> {
-                    oldUser.setName(user.getName());
-                    oldUser.setEmail(user.getEmail());
-                    oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+    public ResponseEntity<String> updateUser(String email, User updated) {
+        User existing = userRepository.findByEmail(email);
+        if (existing == null) {
+            throw new IllegalStateException("User not found");
+        }
 
-                    userRepository.save(oldUser);
-                    return ResponseEntity.ok("User updated successfully");
-                })
-                .orElse(ResponseEntity.badRequest().body("User not found"));
+        validateGitHubUrl(updated.getGitHubUrl());
+        validateLinkedInUrl(updated.getLinkedInUrl());
+        validatePanCard(updated.getPanCard());
+
+        applyUserUpdates(existing, updated);
+        userRepository.save(existing);
+
+        return ResponseEntity.ok("User updated successfully");
     }
+    private void validateGitHubUrl(String newGitHubUrl) {
+        if (newGitHubUrl == null) return;
+
+        if (!newGitHubUrl.matches("^https://github\\.com/[A-Za-z0-9-]+/?$")) {
+            throw new IllegalStateException("Invalid GitHub URL format");
+        }
+
+        if (userRepository.existsByGitHubUrl(newGitHubUrl)) {
+            throw new IllegalStateException("GitHub profile already in use");
+        }
+    }
+    private void validateLinkedInUrl(String newLinkedInUrl) {
+        if (newLinkedInUrl == null) return;
+
+        if (!newLinkedInUrl.matches("^https://(www\\.)?linkedin\\.com/in/[A-Za-z0-9_-]+/?$")) {
+            throw new IllegalStateException("Invalid LinkedIn URL format");
+        }
+
+        if (userRepository.existsByLinkedInUrl(newLinkedInUrl)) {
+            throw new IllegalStateException("LinkedIn profile already in use");
+        }
+    }
+    private void validatePanCard(String newPan) {
+        if (newPan == null) return;
+
+        if (!newPan.matches("^[A-Z]{5}[0-9]{4}[A-Z]$")) {
+            throw new IllegalStateException("Invalid PAN card format");
+        }
+
+        if (userRepository.existsByPanCard(newPan)) {
+            throw new IllegalStateException("PAN Card already in use");
+        }
+    }
+    private void applyUserUpdates(User existing, User updated) {
+        existing.setCompanyName(updated.getCompanyName());
+        existing.setGitHubUrl(updated.getGitHubUrl());
+        existing.setPanCard(updated.getPanCard());
+        existing.setLinkedInUrl(updated.getLinkedInUrl());
+    }
+
+
 
     @Override
     public ResponseEntity<String> deleteUser(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email))
-                .map(user -> {
-                    userRepository.delete(user);
-                    return ResponseEntity.ok("User deleted successfully");
-                })
-                .orElse(ResponseEntity.badRequest().body("User not found"));
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new IllegalStateException("User not found");
+        }
+
+        if (user.getRole() == Role.HR) {
+            jobService.getJobsByEmail(user.getEmail()).forEach(job -> {
+                jobService.deleteJob(job.getId(), job.getEmail());
+            });
+        }
+        RefreshToken refreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
+        if (refreshToken != null) {
+            refreshTokenRepository.delete(refreshToken);
+        }
+        userRepository.delete(user);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }

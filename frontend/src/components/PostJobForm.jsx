@@ -1,76 +1,169 @@
 import React, { useState } from "react";
-
 import AuthForm from "./AuthForm";
 import { useCreateJob } from "../customHooks/useJob";
+
+import Loading from "./Loading";
+import { useIsProfileComplete } from "../customHooks/useAuth";
 
 const PostJobForm = ({ email }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     eligibility: "",
+    category: "",
+    type: "Full-Time",
+    location: "",
+    experienceLevel: "Entry",
+    skills: "",
+    isRemote: false,
+    salary: "",
     deadline: "",
+    tags: "",
   });
+
   const [errors, setErrors] = useState({});
-  const { mutate: createJob, isLoading } = useCreateJob();
+  const { mutate: createJob, isLoading: isCreating } = useCreateJob();
+  const { isComplete, isLoading: isProfileLoading } =
+    useIsProfileComplete(email);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors({});
+
     if (!formData.deadline) {
       setErrors({ deadline: "Deadline is required." });
       return;
     }
 
+    // Convert comma-separated fields to arrays
+    const skillsArray = formData.skills
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const tagsArray = formData.tags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+
     createJob(
-      { ...formData, email },
+      {
+        ...formData,
+        skills: skillsArray,
+        tags: tagsArray,
+        email,
+      },
       {
         onSuccess: () => {
           setFormData({
             title: "",
             description: "",
             eligibility: "",
-            deadline: "",
+            category: "",
+            type: "Full-Time",
+            location: "",
+            experienceLevel: "Entry",
+            skills: "",
+            isRemote: false,
             salary: "",
+            deadline: "",
+            tags: "",
           });
-          setErrors({ success: "Job posted!" });
+          setErrors({ success: "Job posted successfully!" });
         },
         onError: (err) => {
-          setErrors({ general: err.message || "Failed to post job." });
+          const message = err?.response?.data || "Failed to post job.";
+          setErrors({ general: message });
         },
       }
     );
   };
 
+  if (isProfileLoading) return <Loading />;
+
+  if (!isComplete) {
+    return (
+      <div className="text-center text-red-500 font-medium mt-6">
+        ⚠️ Please complete your profile (GitHub, LinkedIn, PAN) before posting a
+        job.
+      </div>
+    );
+  }
+
   const fields = [
-    { label: "Job Title", type: "text", name: "title", value: formData.title },
+    { label: "Job Title", name: "title", type: "text", value: formData.title },
+    {
+      label: "Category",
+      name: "category",
+      type: "text",
+      value: formData.category,
+    },
     {
       label: "Description",
-      type: "textarea",
       name: "description",
+      type: "textarea",
       value: formData.description,
     },
     {
       label: "Eligibility",
-      type: "textarea",
       name: "eligibility",
+      type: "textarea",
       value: formData.eligibility,
     },
     {
-      label: "Deadline",
-      type: "datetime-local",
-      name: "deadline",
-      value: formData.deadline,
+      label: "Job Type",
+      name: "type",
+      type: "text",
+      value: formData.type,
+    },
+    {
+      label: "Location",
+      name: "location",
+      type: "text",
+      value: formData.location,
+    },
+    {
+      label: "Experience Level",
+      name: "experienceLevel",
+      type: "text",
+      value: formData.experienceLevel,
+    },
+    {
+      label: "Skills (comma-separated)",
+      name: "skills",
+      type: "text",
+      value: formData.skills,
+    },
+    {
+      label: "Tags (comma-separated)",
+      name: "tags",
+      type: "text",
+      value: formData.tags,
+    },
+    {
+      label: "Remote",
+      name: "isRemote",
+      type: "checkbox",
+      value: formData.isRemote,
     },
     {
       label: "Salary (LPA)",
-      type: "text",
       name: "salary",
+      type: "text",
       value: formData.salary,
+    },
+    {
+      label: "Deadline",
+      name: "deadline",
+      type: "datetime-local",
+      value: formData.deadline,
     },
   ];
 
@@ -80,7 +173,7 @@ const PostJobForm = ({ email }) => {
         fields={fields}
         onSubmit={handleSubmit}
         buttonLabel="Post Job"
-        isLoading={isLoading}
+        isLoading={isCreating}
         errors={errors}
         handleChange={handleChange}
       />

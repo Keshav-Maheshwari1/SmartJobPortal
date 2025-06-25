@@ -9,18 +9,17 @@ import sliderImages from "../constants/sliderImages";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-  useEffect(() => {
-    const email = localStorage.getItem("userEmail");
-    setUserEmail(email || "");
-  }, []);
 
+  const userEmail = localStorage.getItem("userEmail");
   const { data, isLoading } = useFetchUser(userEmail);
+
   const isHR = data?.role === "HR";
-  const userName = data?.name.split(" ")[0];
-  const name =
-    userName?.charAt(0).toUpperCase() + userName?.slice(1).toLowerCase();
+
+  const userName = data?.name ? data.name.split(" ")[0] : "";
+  const name = userName
+    ? userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase()
+    : "";
 
   const profilePath = isHR ? "/profile/hr" : "/profile/applicant";
   const isLoggedIn = Boolean(userEmail && data);

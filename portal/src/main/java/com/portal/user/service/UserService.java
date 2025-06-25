@@ -4,7 +4,6 @@ package com.portal.user.service;
 import com.portal.user.Entities.User;
 import com.portal.user.models.JwtRequest;
 import com.portal.user.models.JwtResponse;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

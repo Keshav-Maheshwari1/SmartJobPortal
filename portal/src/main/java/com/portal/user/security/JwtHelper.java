@@ -1,7 +1,9 @@
 package com.portal.user.security;
 
+import com.portal.error.TokenExpiredException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.apache.el.parser.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +24,7 @@ public class JwtHelper {
     // Generate a secure key for HS512
     private final SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
-    private final int expiryMs = 24*60*60*1000;
+    private final int expiryMs = 15*60*1000;
 
     public JwtHelper() {
         logger.info("created bean named jwthelper");
@@ -66,9 +68,9 @@ public class JwtHelper {
             logger.error("Invalid JWT signature: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
+        }  catch (ExpiredJwtException e) {
+            throw new TokenExpiredException("JWT expired");
+        }catch (UnsupportedJwtException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());

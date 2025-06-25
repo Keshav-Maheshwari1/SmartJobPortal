@@ -1,5 +1,6 @@
 package com.portal.user.security;
 
+import com.portal.error.TokenExpiredException;
 import com.portal.user.security.JwtHelper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -43,15 +44,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // Handle preflight OPTIONS requests for CORS
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            logger.info("Handling preflight OPTIONS request");
-            response.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins or set specific domains (e.g., localhost and vercel)
-            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
-            response.setHeader("Access-Control-Allow-Credentials", "true");
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
+//        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+//            logger.info("Handling preflight OPTIONS request");
+//            response.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins or set specific domains (e.g., localhost and vercel)
+//            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
+//            response.setHeader("Access-Control-Allow-Credentials", "true");
+//            response.setStatus(HttpServletResponse.SC_OK);
+//            return;
+//        }
 
         // Process Authorization Header
         String requestHeader = request.getHeader("Authorization");
@@ -64,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 username = this.jwtHelper.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
                 logger.error("Illegal Argument while fetching the username", e);
-            } catch (ExpiredJwtException e) {
+            } catch (TokenExpiredException e) {
                 logger.error("JWT token has expired", e);
             } catch (MalformedJwtException e) {
                 logger.error("Invalid JWT token", e);

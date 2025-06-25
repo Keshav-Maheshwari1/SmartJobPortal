@@ -6,18 +6,17 @@ const getAuthToken = () => {
 };
 
 export const applyForJob = async (applicant) => {
-  const { applicantEmail, resumeUrl, jobId } = {
-    applicantEmail: applicant.applicantEmail,
-    resumeUrl: applicant.resumeUrl,
-    jobId: applicant.jobId,
-  };
   const token = getAuthToken();
-  const response = await axios.post(`${BASEURL}/api/applied-jobs/apply`, null, {
-    params: { applicantEmail, resumeUrl, jobId },
-    headers: {
-      Authorization: `Bearer ${token}`, 
-    },
-  });
+  const response = await axios.post(
+    `${BASEURL}/api/applied-jobs/apply`,
+    applicant, // send full applicant object as request body
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
   return response.data;
 };
 
@@ -25,7 +24,7 @@ export const applyForJob = async (applicant) => {
 export const updateApplicationStatus = async ({
   applicantEmail,
   jobId,
-  status
+  status,
 }) => {
   const token = getAuthToken();
   const response = await axios.put(
@@ -34,10 +33,20 @@ export const updateApplicationStatus = async ({
     {
       params: { applicantEmail, jobId, status },
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     }
   );
+  return response.data;
+};
+export const sendOfferLetter = async (payload) => {
+  const token = getAuthToken();
+  const response = await axios.post(`${BASEURL}/api/job-offers/send`, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   return response.data;
 };
 
@@ -46,13 +55,25 @@ export const sendRoomIdToApplicant = async ({
   jobId,
   applicantEmail,
   roomId,
+  time,
 }) => {
   const token = getAuthToken();
   if (!token) {
     return "token is not defined";
   }
   const response = await axios.post(`${BASEURL}/api/applied-jobs/user`, null, {
-    params: { hrEmail, jobId, applicantEmail, roomId },
+    params: { hrEmail, jobId, applicantEmail, roomId, time },
+    headers: {
+      Authorization: `Bearer ${token}`, // Add JWT token to the headers
+    },
+  });
+  return response.data;
+};
+
+export const sendWithDrawRequest = async (id) => {
+  const token = getAuthToken();
+  const response = await axios.delete(`${BASEURL}/api/applied-jobs/withdraw`, {
+    params: { id },
     headers: {
       Authorization: `Bearer ${token}`, // Add JWT token to the headers
     },

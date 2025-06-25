@@ -7,8 +7,6 @@ import com.portal.user.models.JwtResponse;
 import com.portal.user.models.RefreshTokenRequest;
 import com.portal.user.service.RefreshTokenService;
 import com.portal.user.service.UserService;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +34,7 @@ public class UserController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> signUp(@RequestBody User user) {
-        try {
-            User existingUser = userService.getUser(user.getEmail()).getBody();
-            if (existingUser != null) {
-                return ResponseEntity.badRequest().body("User already exists, please login");
-            }
-        } catch (IncorrectResultSizeDataAccessException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Multiple users found with same email. Please contact support.");
-        }
+
         return userService.createUser(user);
     }
 

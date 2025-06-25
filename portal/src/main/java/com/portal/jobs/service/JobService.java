@@ -13,4 +13,6 @@ public interface JobService {
     ResponseEntity<Job> getJobById(String id);
     ResponseEntity<Job> updateJob(String id, Job job, String email);
     ResponseEntity<String> deleteJob(String id, String email);
+    void increamentJobApplicant(String id);
+    void decreamentedApplicantsCount(String id);
 }

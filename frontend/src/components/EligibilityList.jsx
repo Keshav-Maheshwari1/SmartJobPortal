@@ -1,8 +1,9 @@
-import React from "react";
-
 const EligibilityList = ({ eligibility }) => {
   const items = eligibility
-    ? eligibility.split(/\./).map((item) => item.trim()).filter(item=>item.length>0)
+    ? eligibility
+        .split("..")
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0)
     : [];
 
   return (

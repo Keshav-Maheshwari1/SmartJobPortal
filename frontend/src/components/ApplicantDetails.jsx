@@ -6,24 +6,24 @@ import {
   useSendRoomIdToApplicant,
   useUpdateApplicationStatus,
 } from "../customHooks/useAppliedJob";
-import AuthButton from "./AuthButton";
 
 const ApplicantDetails = ({ applicant, jobId }) => {
   const navigate = useNavigate();
   const { data: job } = useFetchJobById(jobId);
 
-const { mutate: updateStatus } = useUpdateApplicationStatus();
+  const { mutate: updateStatus } = useUpdateApplicationStatus();
 
   const { mutate: sendRoomId } = useSendRoomIdToApplicant();
 
   const roomId = localStorage.getItem("roomId");
+  const time = localStorage.getItem("time");
 
   const handleStatusChange = (status) => {
     updateStatus(
       { applicantEmail: applicant.applicantEmail, jobId: job.id, status },
       {
         onSuccess: () => {
-          navigate("/profile/hr");
+          navigate(`/offer/${applicant.applicantEmail}/${jobId}`);
         },
       }
     );
@@ -32,22 +32,26 @@ const { mutate: updateStatus } = useUpdateApplicationStatus();
   const handleScheduleInterview = () => {
     if (!roomId) {
       alert("Please create a Room ID first.");
-      navigate("/profile/hr");
-    } else {
-      sendRoomId(
-        {
-          applicantEmail: applicant.applicantEmail,
-          hrEmail: job.email,
-          jobId: job.id,
-          roomId,
-        },
-        {
-          onSuccess: () => {
-            navigate(`/interviews/${roomId}`);
-          },
-        }
-      );
+      return navigate("/profile/hr");
     }
+    if (!time) {
+      alert("Please enter a date and time.");
+      return navigate("/profile/hr");
+    }
+    sendRoomId(
+      {
+        applicantEmail: applicant.applicantEmail,
+        hrEmail: job.email,
+        jobId: job.id,
+        roomId,
+        time,
+      },
+      {
+        onSuccess: () => {
+          navigate(`/interviews/${roomId}`);
+        },
+      }
+    );
   };
 
   return (

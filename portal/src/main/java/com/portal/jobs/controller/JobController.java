@@ -40,6 +40,7 @@ public class JobController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Job> updateJob(@PathVariable String id, @RequestBody Job updatedJob, @RequestParam String email) {
+
         return jobService.updateJob(id, updatedJob, email);
     }
 

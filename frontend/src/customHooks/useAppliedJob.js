@@ -6,6 +6,8 @@ import {
   getAppliedJobsByApplicantEmail,
   getApplicantsByHrEmail,
   sendRoomIdToApplicant,
+  sendOfferLetter,
+  sendWithDrawRequest,
 } from "../services/appliedJobApi";
 
 export const useApplyForJob = () => {
@@ -19,18 +21,35 @@ export const useApplyForJob = () => {
   });
 };
 
-
 export const useUpdateApplicationStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: updateApplicationStatus,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["appliedJobs",data]);
+      queryClient.invalidateQueries(["appliedJobs", data]);
     },
-    onError: (error)=>{
-      console.error(error)
-    }
+  });
+};
+
+export const useWithDrawApplicant = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: sendWithDrawRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appliedJobs"] });
+    },
+  });
+};
+
+export const useSendOfferLetter = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: sendOfferLetter,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["jobOffers"]);
+      queryClient.invalidateQueries(["appliedJobs"]);
+    },
   });
 };
 
@@ -41,9 +60,6 @@ export const useSendRoomIdToApplicant = () => {
     mutationFn: sendRoomIdToApplicant,
     onSuccess: () => {
       queryClient.invalidateQueries(["appliedJobs"]);
-    },
-    onError: (err) => {
-      console.error("Failed to send room ID:", err);
     },
   });
 };
@@ -57,7 +73,7 @@ export const useGetAcceptedApplicantsByJobId = (jobId) =>
 
 // Query to get applied jobs by applicant email
 export const useGetAppliedJobsByApplicantEmail = (email) =>
-   useQuery({
+  useQuery({
     queryKey: ["appliedJobs", email],
     queryFn: () => getAppliedJobsByApplicantEmail(email),
     enabled: !!email, // Only fetch when email is provided
@@ -68,8 +84,5 @@ export const useGetApplicantsByHrEmail = (email) => {
     queryKey: ["appliedJobs", email],
     queryFn: () => getApplicantsByHrEmail(email), // Make sure this function is working correctly
     enabled: !!email, // Enable only when 'Applicants' section is active
-    onError: (error) => {
-      console.error("Error fetching applicants:", error);
-    },
   });
 };

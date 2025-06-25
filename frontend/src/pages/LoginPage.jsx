@@ -28,6 +28,8 @@ const LoginPage = () => {
           message = "No user found with this email. Please sign up.";
         } else if (err?.response?.status === 401) {
           message = "Incorrect password. Please try again.";
+        }else if(err?.response?.status === 409){
+          message = "User Already Exist please login"
         }
         setErrors({ general: message });
       },
@@ -46,7 +48,7 @@ const LoginPage = () => {
   ];
 
   return (
-    <div className="h-fit flex items-center justify-center bg-gray-900 px-4">
+    <div className="h-fit flex items-center justify-center bg-gray-900 px-4 md:p-32">
       <AnimatedSection className="flex md:flex-row items-center gap-8 bg-gray-800 md:p-8 rounded-xl shadow-lg w-full max-w-5xl">
         {/* Image */}
         <img

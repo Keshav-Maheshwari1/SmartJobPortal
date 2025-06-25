@@ -20,7 +20,7 @@ import java.util.UUID;
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     Logger logger = LoggerFactory.getLogger(RefreshTokenServiceImpl.class);
 
-    private final int refreshTokenValidity = 7 * 24 * 60 * 60;
+    private final int refreshTokenValidity = 15 * 24 * 60 * 60;
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
@@ -54,7 +54,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
             return ResponseEntity.ok(refreshTokenRepository.save(refreshToken));
         } catch (Exception e) {
-            throw new RuntimeException("Error creating refresh token: " + e.getMessage());
+            throw new RuntimeException("Error creating refresh token: ");
         }
     }
 

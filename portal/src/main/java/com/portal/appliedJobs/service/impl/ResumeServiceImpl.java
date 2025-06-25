@@ -24,8 +24,6 @@ public class ResumeServiceImpl implements ResumeService {
         InputStream inputStream = null;
         try {
 
-            String encodedFileName = resumeUrl.substring(resumeUrl.lastIndexOf("/") + 1).replace(" ", "%20");
-
             URL url = URI.create(resumeUrl).toURL();
             inputStream = url.openStream();
 

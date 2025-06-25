@@ -1,5 +1,3 @@
-
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   signUpUser,
@@ -16,7 +14,6 @@ export const useSignUp = () => {
   return useMutation({
     mutationFn: signUpUser,
     onSuccess: (data) => {
-
       localStorage.setItem("userEmail", data.username);
       localStorage.setItem("accessToken", data.jwtToken);
       localStorage.setItem("refreshToken", data.refreshToken);
@@ -27,7 +24,25 @@ export const useSignUp = () => {
     },
   });
 };
+// or your actual path
 
+export const useIsProfileComplete = (email) => {
+  const { data: user, isLoading } = useFetchUser(email);
+
+  const gitHubUrl = user?.gitHubUrl || "";
+  const linkedInUrl = user?.linkedInUrl || "";
+  const panCard = user?.panCard || "";
+
+  const isComplete = !!gitHubUrl && !!linkedInUrl && !!panCard;
+
+  return {
+    isComplete,
+    isLoading,
+    gitHubUrl,
+    linkedInUrl,
+    panCard,
+  };
+};
 
 export const useSignIn = () => {
   const queryClient = useQueryClient();
@@ -41,11 +56,10 @@ export const useSignIn = () => {
       queryClient.setQueryData(["user", data.username], data);
     },
     onError: () => {
-      queryClient.invalidateQueries(["user"])
+      queryClient.invalidateQueries(["user"]);
     },
   });
 };
-
 
 export const useRefreshToken = () => {
   const queryClient = useQueryClient();
@@ -102,8 +116,8 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["user"]);
     },
-    onError: ()=>{
-      queryClient.invalidateQueries(["user"])
-    }
+    onError: () => {
+      queryClient.invalidateQueries(["user"]);
+    },
   });
 };

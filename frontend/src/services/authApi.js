@@ -6,15 +6,47 @@ const axiosInstance = axios.create({
   withCredentials: false,
 });
 
+const getAuthToken = () => {
+  return localStorage.getItem("accessToken");
+};
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = getAuthToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // Axios for public/auth requests
 const authAxios = axios.create({
   baseURL: `${BASEURL}/api/v1`,
   withCredentials: false,
 });
 
+export const refreshJwtToken = async () => {
+  const refreshToken = getRefreshToken();
+  try {
+    const response = await authAxios.post("/auth/refresh-jwt", {
+      token: refreshToken,
+    });
 
-const getAuthToken = () => {
-  return localStorage.getItem("accessToken");
+    const { jwtToken, refreshToken: newRefreshToken } = response.data;
+
+    if (jwtToken && newRefreshToken) {
+      setAccessToken(jwtToken);
+      localStorage.setItem("refreshToken", newRefreshToken);
+    } else {
+      throw new Error("Invalid response from refresh endpoint");
+    }
+
+    return jwtToken;
+  } catch (error) {
+    throw new Error(error.response?.data || "Unable to refresh token");
+  }
 };
 
 const getRefreshToken = () => {
@@ -25,65 +57,32 @@ const setAccessToken = (token) => {
   localStorage.setItem("accessToken", token);
 };
 
-export const refreshJwtToken = async () => {
-  const refreshToken = getRefreshToken();
-  try {
-    const response = await authAxios.post("/auth/refresh-jwt", {
-      token: refreshToken,
-    });
-    const newAccessToken = response.data.token;
-    setAccessToken(newAccessToken);
-    return newAccessToken;
-  } catch (error) {
-    throw new Error("Unable to refresh token: " + error);
-  }
-};
-
-axiosInstance.interceptors.request.use(
-  async (config) => {
-    const token = getAuthToken();
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+    const isTokenExpired =
+      (status === 440 || (status === 401 && message === "TOKEN_EXPIRED")) &&
+      !originalRequest._retry;
+
+    if (isTokenExpired) {
       originalRequest._retry = true;
       try {
         const newAccessToken = await refreshJwtToken();
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        return axiosInstance(originalRequest);
+        originalRequest.headers = {
+          ...originalRequest.headers,
+          Authorization: `Bearer ${newAccessToken}`,
+        };
+        return axiosInstance(originalRequest); // manual retry with fixed headers
       } catch (refreshError) {
-        console.error("Token refresh failed:", refreshError);
+        console.log(refreshError);
+        alert("Session expired. Please log in again.");
         logOutUser();
-      }
-    }
-
-    return Promise.reject(error);
-  }
-);
-
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const newAccessToken = await refreshJwtToken();
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        console.error("Token refresh failed:", refreshError);
+        window.location.href = "/login";
       }
     }
 
@@ -110,7 +109,8 @@ export const fetchUser = async (email) => {
   return res.data;
 };
 
-export const updateUser = async ({ email, updatedData }) => {
+export const updateUser = async (user) => {
+  const { email, ...updatedData } = user;
   const res = await axiosInstance.put(`/users/${email}`, updatedData);
   return res.data;
 };

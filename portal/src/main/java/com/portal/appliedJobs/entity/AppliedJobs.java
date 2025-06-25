@@ -1,4 +1,4 @@
-package com.portal.appliedJobs.models;
+package com.portal.appliedJobs.entity;
 
 import com.portal.appliedJobs.Status;
 import lombok.AllArgsConstructor;
@@ -23,11 +23,19 @@ public class AppliedJobs {
 
     private String applicantEmail;
     private String resumeUrl;
-    private String jobId;
+    private String portfolioUrl;
+    private String expectedSalary;
+    private String noticePeriod;
+    private String currentLocation;
+    private String experienceLevel;
 
+    private String panCard;
+    private String githubUrl;
+    private String linkedInUrl;
+
+    private String jobId;
     private LocalDateTime appliedOn;
 
     private Status status;
-
     private LocalDateTime banExpiryDate;
 }

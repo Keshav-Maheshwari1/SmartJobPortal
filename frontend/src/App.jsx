@@ -16,6 +16,7 @@ import { ScrollToTop } from "./utils/ScrollToTop";
 import JobEditPage from "./pages/JobEditPage";
 import ProtectedRoute from "./components/ProtectedRouteProps";
 import ContactPage from "./components/Contact";
+import OfferLetterPage from "./pages/OfferLetterPage";
 
 const App = () => {
   return (
@@ -64,6 +65,15 @@ const App = () => {
               }
             />
             <Route
+              path="/offer/:applicantEmail/:jobId"
+              element={
+                <ProtectedRoute>
+                  <OfferLetterPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/profile/applicant"
               element={
                 <ProtectedRoute>
@@ -101,7 +111,7 @@ const App = () => {
               path="/contact"
               element={
                 <ProtectedRoute>
-                  <ContactPage/>
+                  <ContactPage />
                 </ProtectedRoute>
               }
             />

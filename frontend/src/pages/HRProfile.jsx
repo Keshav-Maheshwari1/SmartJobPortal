@@ -5,11 +5,13 @@ import ProfileSection from "../components/ProfileSection";
 import JobSection from "../components/JobSection";
 import AuthForm from "../components/AuthForm";
 import ApplicantList from "../components/ApplicantList";
+import InterviewPage from "./InterviewPage";
 
 const HRProfilePage = () => {
   const [activeSection, setActiveSection] = useState("Profile");
   const [selectedJobId, setSelectedJobId] = useState("");
   const [roomId, setRoomId] = useState("");
+  const [date, setDate] = useState("");
   const navigate = useNavigate();
   const hrEmail = localStorage.getItem("userEmail") || "";
 
@@ -27,12 +29,16 @@ const HRProfilePage = () => {
       name: "Create Room",
       icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3 9h-2v-2h-2v2H9v2h2v2h2v-2h2v-2z",
     },
+    {
+      name: "Join Room",
+      icon: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z",
+    },
   ];
 
   const renderSection = () => {
     switch (activeSection) {
       case "Profile":
-        return <ProfileSection userEmail={hrEmail} />;
+        return <ProfileSection userEmail={hrEmail} Role="HR" />;
       case "Jobs":
         return (
           <JobSection
@@ -55,20 +61,43 @@ const HRProfilePage = () => {
                   value: roomId,
                   isPassword: false,
                 },
+                {
+                  name: "date",
+                  label: "Interview Date",
+                  type: "datetime-local",
+                  value: date,
+                  isPassword: false,
+                },
               ]}
               onSubmit={(e) => {
                 e.preventDefault();
-                if (roomId.trim()) {
-                  localStorage.setItem("roomId", roomId.trim());
-                  alert("Room ID saved!");
+                if (!roomId.trim() || !date) {
+                  alert("Please fill all fields.");
+                  return;
                 }
+                const trimmedRoomId = roomId.trim();
+                const isoDate = new Date(date).toISOString();
+                localStorage.setItem("roomId", trimmedRoomId);
+                localStorage.setItem("time", isoDate);
+
+                alert("Interview Room details saved.");
               }}
-              buttonLabel="Save Room ID"
+              buttonLabel="Save Interview Info"
               isLoading={false}
               errors={{}}
-              handleChange={(e) => setRoomId(e.target.value)}
+              handleChange={(e) => {
+                const { name, value } = e.target;
+                if (name === "roomId") setRoomId(value);
+                if (name === "date") setDate(value);
+              }}
             />
           </main>
+        );
+      case "Join Room":
+        return (
+          <div className="bg-gray-800 p-6 rounded-xl shadow-lg max-w-xl mx-auto">
+            <InterviewPage />
+          </div>
         );
       default:
         return null;
@@ -76,14 +105,14 @@ const HRProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 flex flex-col md:flex-row  ">
       <Sidebar
         activeSection={activeSection}
         setActiveSection={setActiveSection}
         sections={sections}
       />
-      <main className="flex-1 p-6 md:p-10 overflow-auto">
-        <h1 className="text-3xl text-center font-semibold text-gray-100 mb-6">
+      <main className="flex-1 p-6 md:p-10 md:ml-24 overflow-auto ">
+        <h1 className="text-3xl text-center text-white font-extrabold mb-10 tracking-wide">
           HR Dashboard
         </h1>
         <div className="animate-fade-in">{renderSection()}</div>

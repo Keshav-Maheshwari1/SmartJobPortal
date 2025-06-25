@@ -43,7 +43,7 @@ const SignUpPage = () => {
   ];
 
   return (
-    <div className="h-fit flex items-center justify-center bg-gray-900 px-4">
+    <div className="h-fit flex items-center justify-center bg-gray-900 px-4 md:p-32">
       <AnimatedSection className="flex flex-col md:flex-row items-center gap-8 bg-gray-800 md:p-8 rounded-xl shadow-lg w-full max-w-5xl">
         {/* Image */}
         <img
