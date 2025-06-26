@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { AccessToken } from "livekit-server-sdk";
-import serverless from "serverless-http";
 
 dotenv.config();
 
@@ -24,5 +23,5 @@ app.post("/get-token", async (req, res) => {
   token.addGrant({ roomJoin: true, room: roomName });
   res.send({ token: await token.toJwt(), url: livekitHost });
 });
-
-export default serverless(app);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {});
