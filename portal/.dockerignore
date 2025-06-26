@@ -6,3 +6,6 @@ target/*.jar.original
 .gitignore
 Dockerfile
 README.md
+
+target
+.env

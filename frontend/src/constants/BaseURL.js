@@ -1,2 +1,2 @@
-const BASEURL = "http://localhost:9000";
+const BASEURL = "https://keshav.webzinny.com";
 export default BASEURL;

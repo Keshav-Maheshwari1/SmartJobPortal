@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portal-app
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    environment:
+      - BREVO_API=${BREVO_API}
