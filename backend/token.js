@@ -25,4 +25,4 @@ app.post("/get-token", async (req, res) => {
   res.send({ token: await token.toJwt(), url: livekitHost });
 });
 
-export const handler = serverless(app);
+export default serverless(app);
