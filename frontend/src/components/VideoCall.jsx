@@ -20,11 +20,8 @@ const VideoCall = ({ token, serverUrl }) => {
   );
 
   useEffect(() => {
-
     const connect = async () => {
       try {
-
-        // Ensure token is available before calling room.connect
         if (!serverUrl || !token) {
           console.error("Missing serverUrl or token");
           return;
@@ -36,9 +33,19 @@ const VideoCall = ({ token, serverUrl }) => {
         console.error("Error connecting to the room:", error);
       }
     };
+
     connect();
 
+    // ✅ Listen for disconnect and reload the page
+    const handleDisconnected = () => {
+      console.log("Room disconnected. Reloading page...");
+      window.location.reload();
+    };
+
+    room.on("disconnected", handleDisconnected);
+
     return () => {
+      room.off("disconnected", handleDisconnected);
       if (room && room.connected) {
         room.disconnect();
       }
@@ -50,9 +57,10 @@ const VideoCall = ({ token, serverUrl }) => {
       <div data-lk-theme="default" style={{ height: "100vh" }}>
         <MyVideoConference />
         <RoomAudioRenderer />
-        <ControlBar />
+        <ControlBar onLeave={() => room.disconnect()} />
       </div>
     </RoomContext.Provider>
   );
 };
+
 export default VideoCall;

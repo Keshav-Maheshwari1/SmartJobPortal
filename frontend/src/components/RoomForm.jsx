@@ -50,7 +50,7 @@ const RoomForm = ({ handleConnect }) => {
       <div>
         <button
           onClick={onSubmit}
-          className="mt-4 w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700"
+          className="mt-4 w-full py-2 px-4 bg-blue-600 cursor-pointer text-white rounded-md shadow-md hover:bg-blue-700"
         >
           Join Room
         </button>

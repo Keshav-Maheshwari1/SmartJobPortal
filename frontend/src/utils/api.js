@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://smart-job-portal-iota.vercel.app",
+  baseURL: "https://smartjobportal.onrender.com",
 });
 
 export const getToken = (roomName, userName) =>
