@@ -9,5 +9,5 @@ services:
     ports:
       - "9000:9000"
     restart: unless-stopped
-    environment:
-      - BREVO_API=${BREVO_API}
+    env_file:
+      - .env

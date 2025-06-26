@@ -1,5 +1,6 @@
 package com.portal;
 
+
 import io.github.cdimascio.dotenv.Dotenv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +13,13 @@ public class JobPortalApplication {
 
 	public static void main(String[] args) {
 		Logger logger = LoggerFactory.getLogger(JobPortalApplication.class);
-		Dotenv dotenv = Dotenv.load();
-		System.setProperty("BREVO_API", dotenv.get("BREVO_API"));
+		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 		SpringApplication.run(JobPortalApplication.class, args);
 		String Ip = getPublicIP();
 		logger.info(Ip);
 	}
+
 	public static String getPublicIP() {
 		try {
 			return new RestTemplate().getForObject("https://api64.ipify.org", String.class);

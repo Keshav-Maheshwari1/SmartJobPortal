@@ -13,8 +13,10 @@ echo "📦 Uploading project files to $REMOTE_IP..."
 ssh $REMOTE "rm -rf $REMOTE_DIR"
 rsync -av --exclude='target' --exclude='.git' --exclude='node_modules' --exclude='.env' ./ $REMOTE:$REMOTE_DIR
 
+
 echo "📂 Restoring environment file on server..."
-ssh $REMOTE "cp /opt/envs/portal.env $REMOTE_DIR/.env"
+ssh $REMOTE "rm -rf $REMOTE_DIR/.env"
+scp -T .env $REMOTE:$REMOTE_DIR/.env
 
 echo "🚀 Deploying..."
 ssh $REMOTE << EOF
@@ -23,4 +25,4 @@ ssh $REMOTE << EOF
   docker compose up --build -d
 EOF
 
-echo "✅ Deployment complete! Visit: http://$REMOTE_IP:9000"
+echo "✅ Deployment complete! Visit: https://keshav.webzinny.com"
