@@ -73,10 +73,7 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const newAccessToken = await refreshJwtToken();
-        originalRequest.headers = {
-          ...originalRequest.headers,
-          Authorization: `Bearer ${newAccessToken}`,
-        };
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest); // manual retry with fixed headers
       } catch (refreshError) {
         console.log(refreshError);

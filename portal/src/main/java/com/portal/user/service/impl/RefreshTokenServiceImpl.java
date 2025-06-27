@@ -87,11 +87,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         String userEmail = oldToken.getUserEmail();
 
         // Generate new refresh token
-        String newToken = UUID.randomUUID().toString();
-        Instant newExpiry = Instant.now().plusSeconds(refreshTokenValidity);
-
-        oldToken.setRefreshToken(newToken);
-        oldToken.setExpireMs(newExpiry);
+        oldToken.setExpireMs(Instant.now().plusSeconds(refreshTokenValidity));
         refreshTokenRepository.save(oldToken);
 
         // Update User entity
@@ -104,7 +100,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         String newAccessToken = jwtHelper.generateTokenFromUsername(userEmail);
 
         JwtResponse jwtResponse = JwtResponse.builder()
-                .refreshToken(newToken)
+                .refreshToken(oldToken.getRefreshToken())
                 .jwtToken(newAccessToken)
                 .username(userEmail)
                 .build();
