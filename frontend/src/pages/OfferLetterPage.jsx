@@ -6,7 +6,13 @@ import { useSendOfferLetter } from "../customHooks/useAppliedJob";
 
 const OfferLetterPage = () => {
   const { applicantEmail, jobId } = useParams();
-  const { mutate: sendOfferLetter, isLoading } = useSendOfferLetter();
+  const { mutate: sendOfferLetter, isLoading } = useSendOfferLetter({
+    onSuccess: () => {
+      console.log("offer letter sent");
+      alert("Offer sent successfully");
+      window.location.reload();
+    },
+  });
 
   const today = new Date().toISOString().split("T")[0];
 

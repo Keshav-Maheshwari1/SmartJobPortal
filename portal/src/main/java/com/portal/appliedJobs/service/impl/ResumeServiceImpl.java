@@ -35,11 +35,8 @@ public class ResumeServiceImpl implements ResumeService {
             return text;
         } catch (IOException e) {
             System.err.println("IOException occurred while processing the PDF from the URL: " + resumeUrl);
-            e.printStackTrace();
             throw e; // rethrow the exception after logging
         } catch (Exception e) {
-            System.err.println("General Exception occurred while processing the PDF from the URL: " + resumeUrl);
-            e.printStackTrace();
             throw e; // rethrow the exception after logging
         } finally {
             if (inputStream != null) {

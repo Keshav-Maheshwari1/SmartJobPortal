@@ -112,12 +112,6 @@ export const updateUser = async (user) => {
   return res.data;
 };
 
-export const deleteUser = async (email) => {
-  const res = await axiosInstance.delete(`/users/${email}`);
-  logOutUser();
-  return res.data;
-};
-
 export const logOutUser = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");

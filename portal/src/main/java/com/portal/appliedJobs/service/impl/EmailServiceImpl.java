@@ -97,7 +97,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
         } catch (Exception e) {
-            log.error("Failed to send Brevo email", e);
+            log.error("Failed to send Brevo email");
 
         }
 
@@ -156,8 +156,8 @@ public class EmailServiceImpl implements EmailService {
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
             log.info("Brevo email sent: {}", exchange.getBody());
         } catch (Exception e) {
-            log.error("Failed to send Brevo email", e);
-            System.out.println("BREVO ERROR: " + e.getMessage());
+            log.error("Failed to send Brevo email");
+
         }
     }
 
@@ -191,7 +191,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
         } catch (Exception e) {
-            log.error("Failed to send Brevo email", e);
+            log.error("Failed to send Brevo email");
         }
 
     }

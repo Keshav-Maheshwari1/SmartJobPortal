@@ -148,7 +148,7 @@ public class AppliedJobsServiceImpl implements AppliedJobsService {
 
             String applicantName = user.getName();
 
-            if (score >= 0.56) {
+            if (score >= 0.45) {
                 emailService.sendHrEmail(
                         request.getApplicantEmail(), job, resumeUrl, job.getHrName()
                 );
@@ -226,12 +226,18 @@ public class AppliedJobsServiceImpl implements AppliedJobsService {
     @Override
     public ResponseEntity<String> deleteApplicationsByJobId(String jobId) {
         List<AppliedJobs> applications = appliedJobsRepository.findByJobId(jobId);
+        boolean hasActiveApplications = applications.stream()
+                .anyMatch(app -> app.getStatus() == Status.REVIEWING || app.getStatus() == Status.ACCEPTED);
+
+        if (hasActiveApplications) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Cannot delete job with applications under review or accepted");
+        }
 
         if (applications.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No applications found for this job");
         }
         appliedJobsRepository.deleteByJobId(jobId);
-        appliedJobsRepository.deleteByJobId(jobId); // or deleteAllByJobId(jobId)
         return ResponseEntity.ok("All applications for job ID " + jobId + " deleted successfully.");
     }
     @Override

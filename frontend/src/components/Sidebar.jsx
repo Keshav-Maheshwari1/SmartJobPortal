@@ -1,19 +1,15 @@
 import React, { useState } from "react";
+import { logOutUser } from "../services/authApi";
 import { useNavigate } from "react-router-dom";
-import { useDeleteUser } from "../customHooks/useAuth";
 
 const Sidebar = ({ activeSection, setActiveSection, sections }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { mutate: deleteUser } = useDeleteUser();
 
   const handleLogout = () => {
-    const userEmail = localStorage.getItem("userEmail");
-    deleteUser(userEmail, {
-      onSuccess: () => {
-        navigate("/", { state: { from: "profile" } });
-      },
-    });
+    logOutUser();
+    navigate("/login", { replace: true }); // replaces history entry
+    window.location.reload();
   };
 
   return (
@@ -70,7 +66,7 @@ const Sidebar = ({ activeSection, setActiveSection, sections }) => {
         <div className="mt-10">
           <button
             onClick={handleLogout}
-            className="w-full px-4 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold 
+            className="w-full px-4 py-3 rounded-xl cursor-pointer bg-red-500 hover:bg-red-600 text-white font-semibold 
             text-sm shadow-md transition-all duration-300"
           >
             Logout

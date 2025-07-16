@@ -15,5 +15,5 @@ public interface UserService {
 
 
     ResponseEntity<String> updateUser(String email, User user);
-    ResponseEntity<String> deleteUser(String email);
+//    ResponseEntity<String> deleteUser(String email);
 }

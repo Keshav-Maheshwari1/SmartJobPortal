@@ -55,8 +55,8 @@ public class UserController {
         return userService.updateUser(email, user);
     }
 
-    @DeleteMapping("/users/{email}")
-    public ResponseEntity<String> deleteUser(@PathVariable String email) {
-        return userService.deleteUser(email);
-    }
+//    @DeleteMapping("/users/{email}")
+//    public ResponseEntity<String> deleteUser(@PathVariable String email) {
+//        return userService.deleteUser(email);
+//    }
 }

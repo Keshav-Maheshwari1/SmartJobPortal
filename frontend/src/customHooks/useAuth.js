@@ -4,7 +4,6 @@ import {
   signInUser,
   fetchUser,
   updateUser,
-  deleteUser,
   refreshJwtToken,
 } from "../services/authApi";
 
@@ -105,19 +104,6 @@ export const useUpdateUser = () => {
     },
     onSettled: (updatedUserData) => {
       queryClient.invalidateQueries(["user", updatedUserData.email]);
-    },
-  });
-};
-export const useDeleteUser = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: deleteUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["user"]);
-    },
-    onError: () => {
-      queryClient.invalidateQueries(["user"]);
     },
   });
 };

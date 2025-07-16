@@ -24,7 +24,7 @@ public class JwtHelper {
     // Generate a secure key for HS512
     private final SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
-    private final int expiryMs = 2*60*1000;
+    private final int expiryMs = 24*60*60*1000;
 
     public JwtHelper() {
         logger.info("created bean named jwthelper");

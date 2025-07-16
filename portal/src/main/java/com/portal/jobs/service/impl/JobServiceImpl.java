@@ -1,6 +1,8 @@
 package com.portal.jobs.service.impl;
 
 import com.portal.Role;
+import com.portal.appliedJobs.Status;
+import com.portal.appliedJobs.entity.AppliedJobs;
 import com.portal.appliedJobs.service.AppliedJobsService;
 import com.portal.jobs.entities.Job;
 import com.portal.jobs.repository.JobRepository;
@@ -156,15 +158,22 @@ public class JobServiceImpl implements JobService {
                         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized to delete this job");
                     }
 
-                    appliedJobsService.deleteApplicationsByJobId(id);
+                    ResponseEntity<String> deleteApplicationsResponse = appliedJobsService.deleteApplicationsByJobId(id);
+                    if (!deleteApplicationsResponse.getStatusCode().is2xxSuccessful()) {
+                        logAction("warn", "Failed to delete applications for job {}: {}", id, deleteApplicationsResponse.getBody());
+                        return deleteApplicationsResponse;
+                    }
+
                     jobRepository.deleteById(id);
                     logAction("info", "Job deleted by {}", email);
                     return ResponseEntity.ok("Job Deleted Successfully");
-                }).orElseGet(() -> {
+                })
+                .orElseGet(() -> {
                     logAction("error", "Job not found with ID: {}", id);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
                 });
     }
+
 
 
     private void logAction(String level, String message, Object... args) {

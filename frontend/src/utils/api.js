@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://smartjobportal.onrender.com",
+  baseURL: "/room",
 });
 
 export const getToken = (roomName, userName) =>

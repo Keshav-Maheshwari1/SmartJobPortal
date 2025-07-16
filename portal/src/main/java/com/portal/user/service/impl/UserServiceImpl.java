@@ -162,7 +162,13 @@ public class UserServiceImpl implements UserService {
         if (existing == null) {
             throw new IllegalStateException("User not found");
         }
-
+        if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
+            if (!passwordEncoder.matches(updated.getPassword(), existing.getPassword())) {
+                existing.setPassword(passwordEncoder.encode(updated.getPassword()));
+                userRepository.save(existing);
+                return ResponseEntity.ok("password updated successfully");
+            }
+        }
         validateGitHubUrl(updated.getGitHubUrl());
         validateLinkedInUrl(updated.getLinkedInUrl());
         validatePanCard(updated.getPanCard());
@@ -214,23 +220,23 @@ public class UserServiceImpl implements UserService {
 
 
 
-    @Override
-    public ResponseEntity<String> deleteUser(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new IllegalStateException("User not found");
-        }
-
-        if (user.getRole() == Role.HR) {
-            jobService.getJobsByEmail(user.getEmail()).forEach(job -> {
-                jobService.deleteJob(job.getId(), job.getEmail());
-            });
-        }
-        RefreshToken refreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
-        if (refreshToken != null) {
-            refreshTokenRepository.delete(refreshToken);
-        }
-        userRepository.delete(user);
-        return ResponseEntity.ok("User deleted successfully");
-    }
+//    @Override
+//    public ResponseEntity<String> deleteUser(String email) {
+//        User user = userRepository.findByEmail(email);
+//        if (user == null) {
+//            throw new IllegalStateException("User not found");
+//        }
+//
+//        if (user.getRole() == Role.HR) {
+//            jobService.getJobsByEmail(user.getEmail()).forEach(job -> {
+//                jobService.deleteJob(job.getId(), job.getEmail());
+//            });
+//        }
+//        RefreshToken refreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
+//        if (refreshToken != null) {
+//            refreshTokenRepository.delete(refreshToken);
+//        }
+//        userRepository.delete(user);
+//        return ResponseEntity.ok("User deleted successfully");
+//    }
 }

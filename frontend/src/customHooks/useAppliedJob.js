@@ -42,14 +42,18 @@ export const useWithDrawApplicant = () => {
   });
 };
 
-export const useSendOfferLetter = () => {
+export const useSendOfferLetter = (options = {}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: sendOfferLetter,
-    onSuccess: () => {
+    onSuccess: (...args) => {
       queryClient.invalidateQueries(["jobOffers"]);
       queryClient.invalidateQueries(["appliedJobs"]);
+      if (options.onSuccess) {
+        options.onSuccess(...args);
+      }
     },
+    ...options,
   });
 };
 

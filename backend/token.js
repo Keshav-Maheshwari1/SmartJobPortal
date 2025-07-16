@@ -13,7 +13,7 @@ const apiKey = process.env.LIVEKIT_API_KEY;
 const apiSecret = process.env.LIVEKIT_API_SECRET;
 const livekitHost = process.env.LIVEKIT_URL;
 
-app.post("/get-token", async (req, res) => {
+app.post("/room/get-token", async (req, res) => {
   const { roomName, userName } = req.body;
 
   const token = new AccessToken(apiKey, apiSecret, {

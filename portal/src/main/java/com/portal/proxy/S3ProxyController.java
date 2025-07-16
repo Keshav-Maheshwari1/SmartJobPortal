@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/proxy")
+@RequestMapping("/api/proxy")
 public class S3ProxyController {
     private final WebClient webClient;
 

@@ -64,13 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = this.jwtHelper.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
-                logger.error("Illegal Argument while fetching the username", e);
+                logger.error("Illegal Argument while fetching the username");
             } catch (TokenExpiredException e) {
-                logger.error("JWT token has expired", e);
+                logger.error("JWT token has expired");
             } catch (MalformedJwtException e) {
-                logger.error("Invalid JWT token", e);
+                logger.error("Invalid JWT token");
             } catch (Exception e) {
-                logger.error("Unexpected error while processing JWT", e);
+                logger.error("Unexpected error while processing JWT");
             }
         } else {
             logger.warn("Invalid or missing Authorization header");

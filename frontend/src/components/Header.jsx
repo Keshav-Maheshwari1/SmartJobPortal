@@ -96,7 +96,7 @@ const Header = () => {
             </span>
           ) : (
             <Link to="/login">
-              <button className="py-2 px-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+              <button className="py-2 px-4 bg-blue-600 cursor-pointer rounded-lg hover:bg-blue-700 transition">
                 Login
               </button>
             </Link>
@@ -147,7 +147,7 @@ const Header = () => {
             <Link to="/login">
               <button
                 onClick={toggleMenu}
-                className="py-2 px-6 bg-blue-600 rounded-lg hover:bg-blue-700 transition text-white font-medium"
+                className="py-2 px-6 cursor-pointer bg-blue-600 rounded-lg hover:bg-blue-700 transition text-white font-medium"
               >
                 Login
               </button>
