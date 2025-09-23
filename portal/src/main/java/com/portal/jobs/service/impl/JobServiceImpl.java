@@ -158,12 +158,7 @@ public class JobServiceImpl implements JobService {
                         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized to delete this job");
                     }
 
-                    ResponseEntity<String> deleteApplicationsResponse = appliedJobsService.deleteApplicationsByJobId(id);
-                    if (!deleteApplicationsResponse.getStatusCode().is2xxSuccessful()) {
-                        logAction("warn", "Failed to delete applications for job {}: {}", id, deleteApplicationsResponse.getBody());
-                        return deleteApplicationsResponse;
-                    }
-
+                    appliedJobsService.deleteApplicationsByJobId(id);
                     jobRepository.deleteById(id);
                     logAction("info", "Job deleted by {}", email);
                     return ResponseEntity.ok("Job Deleted Successfully");

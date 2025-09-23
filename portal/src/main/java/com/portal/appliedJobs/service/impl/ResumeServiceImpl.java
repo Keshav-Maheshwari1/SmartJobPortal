@@ -1,6 +1,7 @@
 package com.portal.appliedJobs.service.impl;
 
 import com.portal.appliedJobs.service.ResumeService;
+import com.portal.jobs.entities.Job;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -11,7 +12,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ResumeServiceImpl implements ResumeService {
@@ -35,9 +38,9 @@ public class ResumeServiceImpl implements ResumeService {
             return text;
         } catch (IOException e) {
             System.err.println("IOException occurred while processing the PDF from the URL: " + resumeUrl);
-            throw e; // rethrow the exception after logging
+            return "Error Processing Resume";
         } catch (Exception e) {
-            throw e; // rethrow the exception after logging
+            throw e;
         } finally {
             if (inputStream != null) {
                 try {
@@ -52,13 +55,25 @@ public class ResumeServiceImpl implements ResumeService {
 
 
     @Override
-    public double calculateMatchScore(String resumeText, String jobDescription) {
-        // Preprocess both resume and job description to remove stop words, punctuation, etc.
+    public double calculateMatchScore(String resumeText, Job job) {
         String preprocessedResume = preprocessText(resumeText);
-        String preprocessedJobDesc = preprocessText(jobDescription);
+        String preprocessedJobDesc = preprocessText(job.getDescription());
+        String preprocessedJobSkills = preprocessText(String.valueOf(job.getSkills()));
 
-        // Calculate similarity on preprocessed text
-        return similarity.apply(preprocessedResume.toLowerCase(), preprocessedJobDesc.toLowerCase());
+        double baseSim = similarity.apply(preprocessedResume, preprocessedJobDesc + " " + preprocessedJobSkills);
+
+        Set<String> resumeTokens = new HashSet<>(Arrays.asList(preprocessedResume.split("\\s+")));
+        Set<String> jobSkillTokens = new HashSet<>(Arrays.asList(preprocessedJobSkills.split("\\s+")));
+
+        int matchedSkills = 0;
+        for (String skill : jobSkillTokens) {
+            if (resumeTokens.contains(skill)) matchedSkills++;
+        }
+
+        double skillScore = (double) matchedSkills / jobSkillTokens.size();
+
+
+        return 0.6 * baseSim + 0.4 * skillScore;
     }
 
     private String preprocessText(String text) {

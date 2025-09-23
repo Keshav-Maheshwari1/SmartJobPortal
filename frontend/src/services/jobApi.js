@@ -78,7 +78,6 @@ export const updateJob = async ({ updatedJob, email }) => {
 };
 
 export const deleteJob = async ({ jobId, email }) => {
-  console.log(jobId);
   const token = getAuthToken();
 
   if (!token) {

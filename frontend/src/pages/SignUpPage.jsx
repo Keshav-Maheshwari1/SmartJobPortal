@@ -15,7 +15,7 @@ const SignUpPage = () => {
   });
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
-  const { mutate: signUpUser, isLoading } = useSignUp();
+  const { mutate: signUpUser, isPending: isLoading } = useSignUp();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

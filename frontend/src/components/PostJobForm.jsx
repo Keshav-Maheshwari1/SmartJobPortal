@@ -22,7 +22,7 @@ const PostJobForm = ({ email }) => {
   });
 
   const [errors, setErrors] = useState({});
-  const { mutate: createJob, isLoading: isCreating } = useCreateJob();
+  const { mutate: createJob, isPending: isCreating } = useCreateJob();
   const { isComplete, isLoading: isProfileLoading } =
     useIsProfileComplete(email);
 

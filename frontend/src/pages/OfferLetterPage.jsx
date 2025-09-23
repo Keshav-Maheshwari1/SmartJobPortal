@@ -6,9 +6,9 @@ import { useSendOfferLetter } from "../customHooks/useAppliedJob";
 
 const OfferLetterPage = () => {
   const { applicantEmail, jobId } = useParams();
-  const { mutate: sendOfferLetter, isLoading } = useSendOfferLetter({
+
+  const { mutateAsync, isPending, isError, error } = useSendOfferLetter({
     onSuccess: () => {
-      console.log("offer letter sent");
       alert("Offer sent successfully");
       window.location.reload();
     },
@@ -68,18 +68,15 @@ const OfferLetterPage = () => {
   ];
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simple validation
     const newErrors = {};
-    fields.forEach((field) => {
-      if (field.required && !form[field.name]) {
-        newErrors[field.name] = "Required";
-      }
+    fields.forEach((f) => {
+      if (f.required && !form[f.name]) newErrors[f.name] = "Required";
     });
 
     if (Object.keys(newErrors).length > 0) {
@@ -87,23 +84,28 @@ const OfferLetterPage = () => {
       return;
     }
 
-    const payload = {
-      applicantEmail,
-      jobId,
-      ...form,
-    };
+    const payload = { applicantEmail, jobId, ...form };
 
-    sendOfferLetter(payload);
+    try {
+      await mutateAsync(payload);
+    } catch (err) {
+      console.error("Failed to send offer letter:", err);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <AuthCard title="Generate Offer Letter">
+        {isError && (
+          <div className="text-red-500 mb-2">
+            {error?.message || "Something went wrong"}
+          </div>
+        )}
         <AuthForm
           fields={fields}
           onSubmit={handleSubmit}
-          buttonLabel="Send Offer Letter"
-          isLoading={isLoading}
+          buttonLabel={isPending ? "Sending..." : "Send Offer Letter"}
+          isLoading={isPending}
           errors={errors}
           handleChange={handleChange}
         />

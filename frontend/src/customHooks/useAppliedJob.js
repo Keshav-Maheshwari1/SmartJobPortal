@@ -44,19 +44,21 @@ export const useWithDrawApplicant = () => {
 
 export const useSendOfferLetter = (options = {}) => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: sendOfferLetter,
     onSuccess: (...args) => {
-      queryClient.invalidateQueries(["jobOffers"]);
-      queryClient.invalidateQueries(["appliedJobs"]);
-      if (options.onSuccess) {
-        options.onSuccess(...args);
-      }
+      queryClient.invalidateQueries({ queryKey: ["jobOffers"] });
+      queryClient.invalidateQueries({ queryKey: ["appliedJobs"] });
+
+      if (options.onSuccess) options.onSuccess(...args);
+    },
+    onError: (...args) => {
+      if (options.onError) options.onError(...args);
     },
     ...options,
   });
 };
-
 export const useSendRoomIdToApplicant = () => {
   const queryClient = useQueryClient();
 
@@ -67,26 +69,25 @@ export const useSendRoomIdToApplicant = () => {
     },
   });
 };
-// Query to get accepted applicants by jobId for HR
+
 export const useGetAcceptedApplicantsByJobId = (jobId) =>
   useQuery({
     queryKey: ["acceptedApplicants", jobId],
     queryFn: () => getAcceptedApplicantsByJobId(jobId),
-    enabled: !!jobId, // Only fetch when jobId is provided
+    enabled: !!jobId,
   });
 
-// Query to get applied jobs by applicant email
 export const useGetAppliedJobsByApplicantEmail = (email) =>
   useQuery({
     queryKey: ["appliedJobs", email],
     queryFn: () => getAppliedJobsByApplicantEmail(email),
-    enabled: !!email, // Only fetch when email is provided
+    enabled: !!email,
   });
 
 export const useGetApplicantsByHrEmail = (email) => {
   return useQuery({
     queryKey: ["appliedJobs", email],
-    queryFn: () => getApplicantsByHrEmail(email), // Make sure this function is working correctly
-    enabled: !!email, // Enable only when 'Applicants' section is active
+    queryFn: () => getApplicantsByHrEmail(email),
+    enabled: !!email,
   });
 };

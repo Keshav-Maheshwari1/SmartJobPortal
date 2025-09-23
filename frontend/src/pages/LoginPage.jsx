@@ -11,7 +11,7 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const { mutate: signInUser, isLoading } = useSignIn();
+  const { mutate: signInUser, isPending: isLoading } = useSignIn();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,8 +28,8 @@ const LoginPage = () => {
           message = "No user found with this email. Please sign up.";
         } else if (err?.response?.status === 401) {
           message = "Incorrect password. Please try again.";
-        }else if(err?.response?.status === 409){
-          message = "User Already Exist please login"
+        } else if (err?.response?.status === 409) {
+          message = "User Already Exist please login";
         }
         setErrors({ general: message });
       },

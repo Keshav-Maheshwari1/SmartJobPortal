@@ -22,7 +22,7 @@ const ApplyJobFormPage = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const { mutate: apply, isLoading: isSubmitting } = useApplyForJob();
+  const { mutate: apply, isPending: isSubmitting } = useApplyForJob();
 
   const handleChange = (e) => {
     const { name, value } = e.target;

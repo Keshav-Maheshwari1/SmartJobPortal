@@ -16,7 +16,6 @@ const InterviewPage = () => {
     <div className="p-6 max-w-4xl mx-auto">
       {!tokenData ? (
         <div className="grid grid-cols-1 gap-8">
-          {/* Room Form */}
           <RoomForm handleConnect={handleConnect} />
         </div>
       ) : (

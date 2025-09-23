@@ -127,9 +127,13 @@ public class AppliedJobsServiceImpl implements AppliedJobsService {
 
             // Resume screening
             String resumeText = resumeService.extractResumeText(cleanedUrl);
-            double score = resumeService.calculateMatchScore(resumeText, job.getDescription());
+            if (resumeText.equals("Error Processing Resume")) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Resume not found or inaccessible at the provided link");
+            }
+            double score = resumeService.calculateMatchScore(resumeText, job);
 
-            // Build application record
             AppliedJobs application = new AppliedJobs();
             application.setApplicantEmail(request.getApplicantEmail());
             application.setResumeUrl(resumeUrl);
@@ -148,7 +152,7 @@ public class AppliedJobsServiceImpl implements AppliedJobsService {
 
             String applicantName = user.getName();
 
-            if (score >= 0.45) {
+            if (score >= 0.59) {
                 emailService.sendHrEmail(
                         request.getApplicantEmail(), job, resumeUrl, job.getHrName()
                 );
@@ -164,13 +168,11 @@ public class AppliedJobsServiceImpl implements AppliedJobsService {
                         .body("Not eligible to apply for this job based on resume screening.");
             }
 
-            // Increment applicant count & save
             jobService.increamentJobApplicant(request.getJobId());
             appliedJobsRepository.save(application);
             return ResponseEntity.ok("Application submitted successfully.");
 
         } catch (Exception e) {
-            // Fallback: save as pending if something goes wrong
             AppliedJobs fallback = new AppliedJobs();
             fallback.setApplicantEmail(request.getApplicantEmail());
             fallback.setResumeUrl(request.getResumeUrl());

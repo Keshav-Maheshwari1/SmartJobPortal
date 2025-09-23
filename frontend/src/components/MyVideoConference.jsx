@@ -1,6 +1,5 @@
 import { Track } from "livekit-client";
 import {
-  AudioTrack,
   GridLayout,
   ParticipantTile,
   useTracks,
@@ -19,7 +18,7 @@ const MyVideoConference = () => {
       tracks={tracks}
       style={{ height: "calc(100vh - var(--lk-control-bar-height))" }}
     >
-      <ParticipantTile/>
+      <ParticipantTile />
     </GridLayout>
   );
 };

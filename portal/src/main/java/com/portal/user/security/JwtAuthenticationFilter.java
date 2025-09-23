@@ -43,18 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Handle preflight OPTIONS requests for CORS
-//        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-//            logger.info("Handling preflight OPTIONS request");
-//            response.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins or set specific domains (e.g., localhost and vercel)
-//            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-//            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
-//            response.setHeader("Access-Control-Allow-Credentials", "true");
-//            response.setStatus(HttpServletResponse.SC_OK);
-//            return;
-//        }
 
-        // Process Authorization Header
         String requestHeader = request.getHeader("Authorization");
         String username = null;
         String token = null;

@@ -23,7 +23,11 @@ const ApplicantDetails = ({ applicant, jobId }) => {
       { applicantEmail: applicant.applicantEmail, jobId: job.id, status },
       {
         onSuccess: () => {
-          navigate(`/offer/${applicant.applicantEmail}/${jobId}`);
+          if (status === "rejected") {
+            window.location.reload();
+          } else {
+            navigate(`/offer/${applicant.applicantEmail}/${jobId}`);
+          }
         },
       }
     );
