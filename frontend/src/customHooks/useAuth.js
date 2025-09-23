@@ -26,7 +26,7 @@ export const useSignUp = () => {
 // or your actual path
 
 export const useIsProfileComplete = (email) => {
-  const { data: user, isLoading } = useFetchUser(email);
+  const { data: user, isPending } = useFetchUser(email);
 
   const gitHubUrl = user?.gitHubUrl || "";
   const linkedInUrl = user?.linkedInUrl || "";
@@ -36,7 +36,7 @@ export const useIsProfileComplete = (email) => {
 
   return {
     isComplete,
-    isLoading,
+    isPending,
     gitHubUrl,
     linkedInUrl,
     panCard,

@@ -9,7 +9,7 @@ import Loading from "../components/Loading";
 const ApplyJobFormPage = () => {
   const { jobId } = useParams();
   const email = localStorage.getItem("userEmail");
-  const { isComplete, isLoading, gitHubUrl, linkedInUrl, panCard } =
+  const { isComplete, isPending, gitHubUrl, linkedInUrl, panCard } =
     useIsProfileComplete(email);
 
   const [formData, setFormData] = useState({
@@ -130,8 +130,7 @@ const ApplyJobFormPage = () => {
     },
   ];
 
-  if (isLoading) return <Loading />;
-  if (isSubmitting) return <Loading />;
+  if (isPending) return <Loading />;
 
   if (!isComplete) {
     return (
@@ -149,7 +148,6 @@ const ApplyJobFormPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
       <AuthCard title="Apply for Job">
-        {/* Read-only Profile Info */}
         <div className="bg-gray-800 text-gray-200 text-sm p-4 rounded mb-4">
           <p>
             <strong>Email:</strong> {email}
